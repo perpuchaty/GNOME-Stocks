@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.gnome-stocks" path="/org/gnome/shell/extensions/gnome-stocks/">
+        <key name="watchlist" type="as">
+            <default>[]</default>
+            <summary>Watchlist stocks</summary>
+            <description>List of stock symbols in the watchlist</description>
+        </key>
+        <key name="panel-stocks" type="as">
+            <default>[]</default>
+            <summary>Panel stocks</summary>
+            <description>List of stock symbols to display in the panel</description>
+        </key>
+        <key name="desktop-widgets" type="as">
+            <default>[]</default>
+            <summary>Desktop widget stocks</summary>
+            <description>List of stock symbols to display as desktop widgets</description>
+        </key>
+        <key name="desktop-widget-positions" type="s">
+            <default>'{}'</default>
+            <summary>Desktop widget positions</summary>
+            <description>JSON object mapping stock symbols to their x,y positions</description>
+        </key>
+        <key name="desktop-widget-opacity" type="i">
+            <default>85</default>
+            <summary>Desktop widget opacity</summary>
+            <description>Opacity of desktop widgets (0-100)</description>
+        </key>
+        <key name="desktop-widget-scale" type="d">
+            <default>1.0</default>
+            <summary>Desktop widget scale</summary>
+            <description>Scale factor for desktop widgets (0.5-2.0)</description>
+        </key>
+        <key name="desktop-widget-show-chart" type="b">
+            <default>true</default>
+            <summary>Show chart in desktop widget</summary>
+            <description>Whether to display the chart in desktop widgets</description>
+        </key>
+        <key name="refresh-interval" type="i">
+            <default>60</default>
+            <summary>Refresh interval</summary>
+            <description>Interval in seconds between stock price updates</description>
+        </key>
+        <key name="font-size" type="i">
+            <default>12</default>
+            <summary>Font size</summary>
+            <description>Font size for the extension popup menu (8-24)</description>
+        </key>
+        <key name="panel-position" type="s">
+            <default>'right'</default>
+            <summary>Panel position</summary>
+            <description>Position of the indicator in the panel (left, center, right)</description>
+        </key>
+        <key name="api-key" type="s">
+            <default>''</default>
+            <summary>API Key</summary>
+            <description>API key for stock data provider (optional for some providers)</description>
+        </key>
+        <key name="chart-style" type="s">
+            <default>'line'</default>
+            <summary>Chart Style</summary>
+            <description>Style of chart display: line, bar, or candle</description>
+        </key>
+        <key name="show-icon" type="b">
+            <default>true</default>
+            <summary>Show Extension Icon</summary>
+            <description>Show or hide the main indicator icon in the panel</description>
+        </key>
+        <key name="show-stock-icon" type="b">
+            <default>true</default>
+            <summary>Show Stock Icon</summary>
+            <description>Show or hide stock icon/logo in panel buttons</description>
+        </key>
+        <key name="show-stock-price" type="b">
+            <default>true</default>
+            <summary>Show Stock Price</summary>
+            <description>Show or hide stock price in panel buttons</description>
+        </key>
+        <key name="show-stock-name" type="b">
+            <default>true</default>
+            <summary>Show Stock Name</summary>
+            <description>Show or hide stock symbol/name in panel buttons</description>
+        </key>
+        <key name="show-stock-gain" type="b">
+            <default>true</default>
+            <summary>Show Stock Gain</summary>
+            <description>Show or hide stock gain/change in panel buttons</description>
+        </key>
+        <key name="widget-move-mode" type="b">
+            <default>false</default>
+            <summary>Widget Move Mode</summary>
+            <description>When enabled, widgets are brought to front for repositioning</description>
+        </key>
+    </schema>
+</schemalist>

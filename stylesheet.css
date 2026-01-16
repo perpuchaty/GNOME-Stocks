@@ -1,0 +1,420 @@
+/* GNOME Stocks Extension Stylesheet */
+
+/* ============================================
+   MAIN POPUP MENU CONTAINER
+   ============================================ */
+
+/* Main popup menu - fixed width */
+/* Note: Only target our specific popup, not all popup-menu-content */
+.stockbar-popup-menu .popup-menu-content {
+    padding: 0;
+}
+
+.stockbar-popup-menu {
+    width: 380px;
+    padding: 12px;
+    border-radius: 16px;
+    background-color: rgba(30, 30, 35, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   SEARCH BOX
+   ============================================ */
+
+.stockbar-search-container {
+    padding: 0 0 12px 0;
+}
+
+.stockbar-search-entry {
+    width: 100%;
+    height: 36px;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 13px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.stockbar-search-entry:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(100, 150, 255, 0.5);
+}
+
+.stockbar-search-entry:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.stockbar-section-header {
+    font-size: 11px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px 12px 6px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   WATCHLIST CONTAINER
+   ============================================ */
+
+.stockbar-watchlist-scroll {
+    max-height: 320px;
+    min-height: 100px;
+}
+
+.stockbar-watchlist-container {
+    padding: 4px 0;
+}
+
+/* ============================================
+   STOCK ITEMS (Watchlist & Search Results)
+   ============================================ */
+
+.stockbar-stock-item {
+    padding: 10px 12px;
+    margin: 2px 4px;
+    border-radius: 10px;
+    background-color: transparent;
+    transition-duration: 150ms;
+}
+
+.stockbar-stock-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.stockbar-stock-item:active {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Stock logo */
+.stockbar-stock-logo {
+    margin-right: 10px;
+    border-radius: 6px;
+}
+
+/* Stock info text */
+.stockbar-stock-symbol {
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.stockbar-stock-name {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 160px;
+}
+
+/* Stock prices */
+.stockbar-stock-price {
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff;
+    text-align: right;
+}
+
+.stockbar-stock-change {
+    font-size: 11px;
+    text-align: right;
+}
+
+.stockbar-change-positive {
+    color: #4ade80;
+}
+
+.stockbar-change-negative {
+    color: #f87171;
+}
+
+.stockbar-change-neutral {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   ACTION BUTTONS (Chart, Panel, Delete)
+   ============================================ */
+
+.stockbar-action-button {
+    padding: 6px;
+    margin: 0 2px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: none;
+}
+
+.stockbar-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.stockbar-action-button:active {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.stockbar-action-button-active {
+    background-color: rgba(100, 150, 255, 0.2);
+}
+
+.stockbar-action-button-active:hover {
+    background-color: rgba(100, 150, 255, 0.3);
+}
+
+/* ============================================
+   MENU FOOTER (Refresh, Settings)
+   ============================================ */
+
+.stockbar-menu-footer {
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-footer-button {
+    padding: 10px 12px;
+    margin: 2px 4px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+.stockbar-footer-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.stockbar-footer-button:active {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.stockbar-footer-icon {
+    margin-right: 8px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.stockbar-footer-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   SEPARATOR
+   ============================================ */
+
+.stockbar-separator {
+    height: 1px;
+    margin: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.stockbar-empty-state {
+    padding: 24px;
+    text-align: center;
+}
+
+.stockbar-empty-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+}
+
+/* ============================================
+   SEARCH RESULTS
+   ============================================ */
+
+.stockbar-search-results {
+    padding: 4px 0;
+    margin-bottom: 8px;
+}
+
+.stockbar-search-result-item {
+    padding: 8px 12px;
+    margin: 2px 4px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+.stockbar-search-result-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   PANEL STOCK BUTTONS (Top Bar)
+   ============================================ */
+
+.stockbar-panel-button {
+    padding: 0 10px;
+    margin: 0 2px;
+    spacing: 6px;
+    border-radius: 8px;
+    background-color: transparent;
+}
+
+.stockbar-panel-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-panel-logo {
+    margin-right: 4px;
+}
+
+.stockbar-panel-symbol {
+    font-size: 11px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.stockbar-panel-price {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.stockbar-panel-change {
+    font-size: 10px;
+}
+
+/* ============================================
+   CHART POPUP
+   ============================================ */
+
+.stockbar-chart-popup {
+    width: 340px;
+    padding: 16px;
+    border-radius: 16px;
+    background-color: rgba(30, 30, 35, 0.98);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.stockbar-chart-header {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-chart-symbol {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.stockbar-chart-name {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stockbar-chart-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.stockbar-chart-change {
+    font-size: 12px;
+}
+
+/* Chart range buttons */
+.stockbar-range-buttons {
+    padding: 8px 0;
+}
+
+.stockbar-range-button {
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.stockbar-range-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.stockbar-range-button-active {
+    background-color: rgba(100, 150, 255, 0.3);
+    color: #ffffff;
+}
+
+.stockbar-range-button-active:hover {
+    background-color: rgba(100, 150, 255, 0.4);
+}
+
+/* Chart area */
+.stockbar-chart-canvas-container {
+    padding: 12px 0;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 8px 0;
+}
+
+/* Chart stats */
+.stockbar-chart-stats {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-chart-stat {
+    padding: 4px 0;
+}
+
+.stockbar-chart-stat-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stockbar-chart-stat-value {
+    font-size: 12px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Remove from panel button */
+.stockbar-remove-button {
+    padding: 10px 12px;
+    margin-top: 12px;
+    border-radius: 10px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+}
+
+.stockbar-remove-button:hover {
+    background-color: rgba(255, 100, 100, 0.15);
+}
+
+.stockbar-remove-label {
+    font-size: 12px;
+    color: rgba(255, 100, 100, 0.8);
+}
+
+/* ============================================
+   OVERRIDE DEFAULT GNOME SHELL STYLES
+   ============================================ */
+
+/* Override popup menu item default styles */
+.popup-menu-item {
+    border-radius: 10px;
+}
+
+.popup-menu-item:hover,
+.popup-menu-item:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.popup-menu-item:active {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Make separator more subtle */
+.popup-separator-menu-item .popup-separator-menu-item-separator {
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 1px;
+    margin: 4px 12px;
+}
