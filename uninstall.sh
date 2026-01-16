@@ -2,7 +2,7 @@
 
 # Uninstall GNOME Stocks GNOME Extension
 
-EXTENSION_UUID="gnome-stocks@sowa"
+EXTENSION_UUID="gnome-stocks@perpuchaty.github.com"
 EXTENSION_DIR="$HOME/.local/share/gnome-shell/extensions/$EXTENSION_UUID"
 
 echo "Uninstalling GNOME Stocks GNOME Extension..."

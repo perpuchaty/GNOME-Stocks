@@ -216,7 +216,7 @@ class StockPopupMenu extends PanelMenu.Button {
         const settingsButton = this._createFooterButton('preferences-system-symbolic', 'Settings');
         settingsButton.connect('clicked', () => {
             try {
-                GLib.spawn_command_line_async(`gnome-extensions prefs gnome-stocks@sowa`);
+                GLib.spawn_command_line_async(`gnome-extensions prefs gnome-stocks@perpuchaty.github.com`);
             } catch (e) {
                 console.log(`GNOME Stocks: Could not open preferences: ${e.message}`);
             }

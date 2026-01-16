@@ -30,7 +30,7 @@ A GNOME 49 extension for tracking stock market prices with search, watchlist, pa
    - **Wayland**: Log out and log back in
 4. Enable the extension:
    ```bash
-   gnome-extensions enable gnome-stocks@sowa
+   gnome-extensions enable gnome-stocks@perpuchaty.github.com
    ```
    Or use the GNOME Extensions app.
 
@@ -62,17 +62,21 @@ Stocks shown in the panel display:
 ### Desktop Widgets
 Desktop widgets provide persistent, at-a-glance stock information:
 - **Pin/Unpin**: Click the pin icon in the watchlist to add/remove desktop widgets
+- **Move Widgets**: Click "Arrange Widgets" button to enter move mode, drag widgets to reposition, click again to save positions
+- **Interactive Charts**: Widgets display live price charts with multiple timeframe options (1D, 5D, 1M, 6M, 1Y, 5Y)
+- **Draggable**: Widgets can be moved anywhere on your desktop
+- **Customizable**: Adjust opacity, scale, and chart visibility in preferences
+
 ## Configuration
 
 Access preferences via the extension menu or run:
 ```bash
-gnome-extensions prefs gnome-stocks@sowa
-## Data Source
+gnome-extensions prefs gnome-stocks@perpuchaty.github.com
+```
 
-- **Stock Data**: Yahoo Finance API (no API key required)
-- **Chart Data**: Historical price data with multiple timeframes
-- **Company Logos**: Clearbit Logo API with local caching
-- **Supported Assets**: Stocks, cryptocurrencies, forex, and major indices
+### Available Settings
+
+**Appearance**
 - **Panel Position**: Choose where the indicator appears (Left, Center, Right)
 - **Show Icon**: Toggle main indicator icon visibility
 - **Show Stock Elements**: Control visibility of icons, prices, names, and gains in panel buttons
@@ -85,22 +89,18 @@ gnome-extensions prefs gnome-stocks@sowa
 
 **Updates**
 - **Refresh Interval**: How often to update prices (default: 60 seconds, minimum: 30 seconds)
-Stock data is fetched from Yahoo Finance API. No API key required.
 
-Logos are fetched from Clearbit Logo API.
+## Data Source
 
-## Configuration
-
-Settings are stored using GSettings. The following can be configured:
-
-- **Watchlist**: List of stock symbols you're tracking
-- **Panel Stocks**: Stocks to display in the top bar
-- **Refresh Interval**: How often to update prices (default: 60 seconds)
+- **Stock Data**: Yahoo Finance API (no API key required)
+- **Chart Data**: Historical price data with multiple timeframes
+- **Company Logos**: Clearbit Logo API with local caching
+- **Supported Assets**: Stocks, cryptocurrencies, forex, and major indices
 
 ## File Structure
 
 ```
-gnome-stocks@sowa/
+gnome-stocks@perpuchaty.github.com/
 ├── extension.js        # Main extension entry point
 ├── stockPopupMenu.js   # UI components and menu
 ├── stockApi.js         # Yahoo Finance API integration
@@ -127,8 +127,8 @@ Run the uninstallation script:
 
 Or manually:
 ```bash
-gnome-extensions disable gnome-stocks@sowa
-rm -rf ~/.local/share/gnome-shell/extensions/gnome-stocks@sowa
+gnome-extensions disable gnome-stocks@perpuchaty.github.com
+rm -rf ~/.local/share/gnome-shell/extensions/gnome-stocks@perpuchaty.github.com
 rm -rf ~/.cache/gnome-stocks-logos
 ```
 
@@ -143,3 +143,7 @@ Contributions are welcome! Feel free to submit issues and pull requests.
 ## Disclaimer
 
 This extension is for informational purposes only. Stock data may be delayed. Do not use for trading decisions.
+
+## Donation
+
+https://buymeacoffee.com/perpuchaty

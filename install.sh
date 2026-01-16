@@ -2,7 +2,7 @@
 
 # GNOME Stocks GNOME Extension Installation Script
 
-EXTENSION_UUID="gnome-stocks@sowa"
+EXTENSION_UUID="gnome-stocks@perpuchaty.github.com"
 EXTENSION_DIR="$HOME/.local/share/gnome-shell/extensions/$EXTENSION_UUID"
 SOURCE_DIR="$(cd "$(dirname "$0")" && pwd)"
 
