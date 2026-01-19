@@ -97,7 +97,7 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         this._panelIcon = new St.Icon({
-            icon_name: 'view-list-symbolic',
+            icon_name: 'power-statistics-symbolic',
             style_class: 'system-status-icon'
         });
         
