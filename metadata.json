@@ -3,7 +3,7 @@
     "description": "Track stock market prices with search, watchlist, and panel display",
     "uuid": "gnome-stocks@perpuchaty.github.com",
     "version": 1,
-    "shell-version": ["49"],
+    "shell-version": ["45", "46", "47", "48", "49"],
     "url": "https://github.com/perpuchaty/GNOME-Stocks",
     "settings-schema": "org.gnome.shell.extensions.gnome-stocks",
     "donations": {
