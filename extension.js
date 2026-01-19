@@ -21,7 +21,7 @@ export default class GNOMEStocksExtension extends Extension {
     }
 
     enable() {
-        log('GNOME Stocks: Enabling extension');
+        console.debug('GNOME Stocks: Enabling extension');
         
         // Get settings
         this._settings = this.getSettings();
@@ -66,7 +66,7 @@ export default class GNOMEStocksExtension extends Extension {
             this._updateWidgetMoveMode();
         });
         
-        log('GNOME Stocks: Extension enabled');
+        console.debug('GNOME Stocks: Extension enabled');
     }
 
     _addToPanel() {
@@ -74,19 +74,19 @@ export default class GNOMEStocksExtension extends Extension {
         const position = this._settings.get_string('panel-position');
         Main.panel.addToStatusArea('gnome-stocks-indicator', this._indicator, 0, position);
         this._indicatorAdded = true;
-        log('GNOME Stocks: Main indicator added to panel');
+        console.debug('GNOME Stocks: Main indicator added to panel');
     }
 
     _removeFromPanel() {
         if (!this._indicator || !this._indicatorAdded) return;
         this._indicator.container.get_parent()?.remove_child(this._indicator.container);
         this._indicatorAdded = false;
-        log('GNOME Stocks: Main indicator removed from panel');
+        console.debug('GNOME Stocks: Main indicator removed from panel');
     }
 
     _syncIndicatorVisibility() {
         const shouldShow = this._settings.get_boolean('show-icon');
-        log(`GNOME Stocks: Syncing indicator visibility - shouldShow: ${shouldShow}, indicatorAdded: ${this._indicatorAdded}`);
+        console.debug(`GNOME Stocks: Syncing indicator visibility - shouldShow: ${shouldShow}, indicatorAdded: ${this._indicatorAdded}`);
         
         if (!this._indicator) return;
         
@@ -228,9 +228,9 @@ export default class GNOMEStocksExtension extends Extension {
             }
             
             this._desktopWidgets.set(symbol, widget);
-            log(`GNOME Stocks: Created desktop widget for ${symbol}`);
+            console.debug(`GNOME Stocks: Created desktop widget for ${symbol}`);
         } catch (e) {
-            log(`GNOME Stocks: Error creating desktop widget for ${symbol}: ${e.message}`);
+            console.debug(`GNOME Stocks: Error creating desktop widget for ${symbol}: ${e.message}`);
         }
     }
     
@@ -246,7 +246,7 @@ export default class GNOMEStocksExtension extends Extension {
                 }
                 widget.destroy();
                 this._desktopWidgets.delete(symbol);
-                log(`GNOME Stocks: Removed desktop widget for ${symbol}`);
+                console.debug(`GNOME Stocks: Removed desktop widget for ${symbol}`);
             }
         }
         
@@ -303,7 +303,7 @@ export default class GNOMEStocksExtension extends Extension {
     }
 
     disable() {
-        log('GNOME Stocks: Disabling extension');
+        console.debug('GNOME Stocks: Disabling extension');
         
         if (this._positionChangedId) {
             this._settings.disconnect(this._positionChangedId);
@@ -323,6 +323,11 @@ export default class GNOMEStocksExtension extends Extension {
         if (this._desktopWidgetsChangedId) {
             this._settings.disconnect(this._desktopWidgetsChangedId);
             this._desktopWidgetsChangedId = null;
+        }
+        
+        if (this._widgetMoveModeChangedId) {
+            this._settings.disconnect(this._widgetMoveModeChangedId);
+            this._widgetMoveModeChangedId = null;
         }
         
         // Destroy all desktop widgets
@@ -348,6 +353,6 @@ export default class GNOMEStocksExtension extends Extension {
         
         this._settings = null;
         
-        log('GNOME Stocks: Extension disabled');
+        console.debug('GNOME Stocks: Extension disabled');
     }
 }

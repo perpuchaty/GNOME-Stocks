@@ -1,9 +1,8 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Soup from 'gi://Soup?version=3.0';
-import GdkPixbuf from 'gi://GdkPixbuf';
 
-const CACHE_DIR = GLib.get_user_cache_dir() + '/stockbar-logos';
+const CACHE_DIR = GLib.get_user_cache_dir() + '/gnome-stocks-logos';
 
 export class LogoCache {
     constructor() {
@@ -18,7 +17,7 @@ export class LogoCache {
             try {
                 dir.make_directory_with_parents(null);
             } catch (e) {
-                console.log(`GNOME Stocks: Could not create cache dir: ${e.message}`);
+                console.debug(`GNOME Stocks: Could not create cache dir: ${e.message}`);
             }
         }
     }
@@ -129,7 +128,7 @@ export class LogoCache {
                                 this._notifyCallbacks(symbol, gicon);
                                 return;
                             } catch (writeError) {
-                                console.log(`StockBar: Error writing cache: ${writeError.message}`);
+                                console.debug(`GNOME Stocks: Error writing cache: ${writeError.message}`);
                             }
                         }
                     }
@@ -151,7 +150,7 @@ export class LogoCache {
             try {
                 cb(gicon);
             } catch (e) {
-                log(`StockBar: Error in logo callback: ${e.message}`);
+               console.debug(`GNOME Stocks: Error in logo callback: ${e.message}`);
             }
         });
     }
@@ -174,6 +173,9 @@ export class LogoCache {
     destroy() {
         this._cache.clear();
         this._pendingLoads.clear();
-        this._session = null;
+        if (this._session) {
+            this._session.abort();
+            this._session = null;
+        }
     }
 }

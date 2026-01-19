@@ -42,7 +42,7 @@ const SharedData = {
             try {
                 callback();
             } catch (e) {
-                console.log(`GNOME Stocks: Listener error: ${e.message}`);
+                console.debug(`GNOME Stocks: Listener error: ${e.message}`);
             }
         }
     },
@@ -218,7 +218,7 @@ class StockPopupMenu extends PanelMenu.Button {
             try {
                 GLib.spawn_command_line_async(`gnome-extensions prefs gnome-stocks@perpuchaty.github.com`);
             } catch (e) {
-                console.log(`GNOME Stocks: Could not open preferences: ${e.message}`);
+                console.debug(`GNOME Stocks: Could not open preferences: ${e.message}`);
             }
             this.menu.close();
         });
@@ -346,7 +346,7 @@ class StockPopupMenu extends PanelMenu.Button {
         } catch (e) {
             this._clearSearchResults();
             this._searchSeparator.visible = true;
-            console.log(`GNOME Stocks: Search error: ${e.message}`);
+            console.debug(`GNOME Stocks: Search error: ${e.message}`);
             
             const errorLabel = new St.Label({
                 text: 'Search unavailable',
@@ -566,7 +566,7 @@ class StockPopupMenu extends PanelMenu.Button {
             
             this._updateWatchlistUI();
         } catch (e) {
-            console.log(`GNOME Stocks: Error refreshing watchlist: ${e.message}`);
+            console.debug(`GNOME Stocks: Error refreshing watchlist: ${e.message}`);
         }
     }
 
@@ -743,7 +743,7 @@ class StockPopupMenu extends PanelMenu.Button {
                 delete positions[symbol];
                 this._settings.set_string('desktop-widget-positions', JSON.stringify(positions));
             } catch (e) {
-                console.log(`GNOME Stocks: Error removing widget position: ${e.message}`);
+                console.debug(`GNOME Stocks: Error removing widget position: ${e.message}`);
             }
         }
         
@@ -1207,7 +1207,7 @@ class StockPanelButton extends PanelMenu.Button {
             this._chartData = data;
             this._renderChart(data);
         } catch (e) {
-            console.log(`GNOME Stocks: Error loading chart: ${e.message}`);
+            console.debug(`GNOME Stocks: Error loading chart: ${e.message}`);
             this._chartInfoLabel.set_text('Failed to load chart');
             this._chartCanvas.queue_repaint();
         } finally {
@@ -1512,12 +1512,14 @@ class DesktopStockWidget extends St.BoxLayout {
         this._dragOffsetY = 0;
         this._rangeButtons = [];
         this._selectedRange = null; // Will be loaded in _buildUI
+        this._initTimeout = null;
         
         this._buildUI();
         this._loadPosition();
         
         // Load chart after a delay to ensure API is available
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+        this._initTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+            this._initTimeout = null;
             const range = this._selectedRange || { range: '1mo', interval: '1d' };
             this._loadChart(range.range, range.interval);
             return GLib.SOURCE_REMOVE;
@@ -1785,7 +1787,7 @@ class DesktopStockWidget extends St.BoxLayout {
                 this.set_position(monitor.x + offsetX, monitor.y + offsetY);
             }
         } catch (e) {
-            console.log(`GNOME Stocks: Error loading widget position: ${e.message}`);
+            console.debug(`GNOME Stocks: Error loading widget position: ${e.message}`);
         }
     }
     
@@ -1796,7 +1798,7 @@ class DesktopStockWidget extends St.BoxLayout {
             positions[this._symbol] = { x, y };
             this._settings.set_string('desktop-widget-positions', JSON.stringify(positions));
         } catch (e) {
-            console.log(`GNOME Stocks: Error saving widget position: ${e.message}`);
+            console.debug(`GNOME Stocks: Error saving widget position: ${e.message}`);
         }
     }
     
@@ -1807,7 +1809,7 @@ class DesktopStockWidget extends St.BoxLayout {
                 return positions[this._symbol].rangeData;
             }
         } catch (e) {
-            console.log(`GNOME Stocks: Error loading widget range: ${e.message}`);
+            console.debug(`GNOME Stocks: Error loading widget range: ${e.message}`);
         }
         return { range: '1mo', interval: '1d' };
     }
@@ -1821,7 +1823,7 @@ class DesktopStockWidget extends St.BoxLayout {
             positions[this._symbol].rangeData = { range: rangeData.range, interval: rangeData.interval };
             this._settings.set_string('desktop-widget-positions', JSON.stringify(positions));
         } catch (e) {
-            console.log(`GNOME Stocks: Error saving widget range: ${e.message}`);
+            console.debug(`GNOME Stocks: Error saving widget range: ${e.message}`);
         }
     }
     
@@ -1888,7 +1890,7 @@ class DesktopStockWidget extends St.BoxLayout {
         }
         
         if (!this._api) {
-            console.log(`GNOME Stocks: API not available for desktop widget chart`);
+            console.debug(`GNOME Stocks: API not available for desktop widget chart`);
             this._chartInfoLabel.set_text('Chart unavailable - API not ready');
             return;
         }
@@ -1925,7 +1927,7 @@ class DesktopStockWidget extends St.BoxLayout {
                 this._chartInfoLabel.set_style(`font-size: ${9 * this._scale}px; color: ${changeColor}; margin-top: ${4 * this._scale}px;`);
             }
         } catch (e) {
-            console.log(`GNOME Stocks: Error loading chart for desktop widget: ${e.message}`);
+            console.debug(`GNOME Stocks: Error loading chart for desktop widget: ${e.message}`);
             this._chartInfoLabel.set_text('Chart unavailable');
         }
     }
@@ -2058,6 +2060,11 @@ class DesktopStockWidget extends St.BoxLayout {
     }
     
     destroy() {
+        if (this._initTimeout) {
+            GLib.source_remove(this._initTimeout);
+            this._initTimeout = null;
+        }
+        
         SharedData.removeListener(this._updateCallback);
         
         if (this._settingsChangedId) {

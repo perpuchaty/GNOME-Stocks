@@ -7,6 +7,6 @@
     "url": "https://github.com/perpuchaty/GNOME-Stocks",
     "settings-schema": "org.gnome.shell.extensions.gnome-stocks",
     "donations": {
-        "buymeacoffee": "https://buymeacoffee.com/perpuchaty"
+        "buymeacoffee": "perpuchaty"
     }
 }

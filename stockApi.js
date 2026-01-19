@@ -39,7 +39,7 @@ export class StockAPI {
                     
                     // Check if response looks like JSON
                     if (!text || !text.trim().startsWith('{')) {
-                        console.log('GNOME Stocks: Non-JSON response from search API');
+                        console.debug('GNOME Stocks: Non-JSON response from search API');
                         resolve([]);
                         return;
                     }
@@ -85,7 +85,7 @@ export class StockAPI {
                         resolve([]);
                     }
                 } catch (e) {
-                    console.log(`GNOME Stocks: Search error: ${e.message}`);
+                    console.debug(`GNOME Stocks: Search error: ${e.message}`);
                     resolve([]); // Return empty instead of rejecting
                 }
             });
@@ -529,6 +529,9 @@ export class StockAPI {
     }
 
     destroy() {
-        this._session = null;
+        if (this._session) {
+            this._session.abort();
+            this._session = null;
+        }
     }
 }
