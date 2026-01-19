@@ -12,11 +12,6 @@ export default class GNOMEStocksExtension extends Extension {
         this._indicator = null;
         this._stockButtons = new Map();
         this._desktopWidgets = new Map();
-        this._positionChangedId = null;
-        this._panelStocksChangedId = null;
-        this._showIconChangedId = null;
-        this._desktopWidgetsChangedId = null;
-        this._widgetMoveModeChangedId = null;
         this._indicatorAdded = false;
     }
 
@@ -41,30 +36,15 @@ export default class GNOMEStocksExtension extends Extension {
         // Create desktop widgets
         this._createDesktopWidgets();
         
-        // Listen for position changes
-        this._positionChangedId = this._settings.connect('changed::panel-position', () => {
-            this._repositionIndicator();
-        });
-        
-        // Listen for panel stocks changes
-        this._panelStocksChangedId = this._settings.connect('changed::panel-stocks', () => {
-            this._updateStockButtons();
-        });
-
-        // Listen for indicator visibility changes
-        this._showIconChangedId = this._settings.connect('changed::show-icon', () => {
-            this._syncIndicatorVisibility();
-        });
-        
-        // Listen for desktop widgets changes
-        this._desktopWidgetsChangedId = this._settings.connect('changed::desktop-widgets', () => {
-            this._updateDesktopWidgets();
-        });
-        
-        // Listen for widget move mode changes
-        this._widgetMoveModeChangedId = this._settings.connect('changed::widget-move-mode', () => {
-            this._updateWidgetMoveMode();
-        });
+        // Listen for settings changes
+        this._settings.connectObject(
+            'changed::panel-position', () => this._repositionIndicator(),
+            'changed::panel-stocks', () => this._updateStockButtons(),
+            'changed::show-icon', () => this._syncIndicatorVisibility(),
+            'changed::desktop-widgets', () => this._updateDesktopWidgets(),
+            'changed::widget-move-mode', () => this._updateWidgetMoveMode(),
+            this
+        );
         
         console.debug('GNOME Stocks: Extension enabled');
     }
@@ -305,29 +285,9 @@ export default class GNOMEStocksExtension extends Extension {
     disable() {
         console.debug('GNOME Stocks: Disabling extension');
         
-        if (this._positionChangedId) {
-            this._settings.disconnect(this._positionChangedId);
-            this._positionChangedId = null;
-        }
-        
-        if (this._panelStocksChangedId) {
-            this._settings.disconnect(this._panelStocksChangedId);
-            this._panelStocksChangedId = null;
-        }
-
-        if (this._showIconChangedId) {
-            this._settings.disconnect(this._showIconChangedId);
-            this._showIconChangedId = null;
-        }
-        
-        if (this._desktopWidgetsChangedId) {
-            this._settings.disconnect(this._desktopWidgetsChangedId);
-            this._desktopWidgetsChangedId = null;
-        }
-        
-        if (this._widgetMoveModeChangedId) {
-            this._settings.disconnect(this._widgetMoveModeChangedId);
-            this._widgetMoveModeChangedId = null;
+        // Disconnect all settings signals
+        if (this._settings) {
+            this._settings.disconnectObject(this);
         }
         
         // Destroy all desktop widgets

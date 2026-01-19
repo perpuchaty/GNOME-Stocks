@@ -108,11 +108,14 @@ class StockPopupMenu extends PanelMenu.Button {
         this._buildMenu();
         
         // Connect settings changes
-        this._settingsChangedId = this._settings.connect('changed', (settings, key) => {
-            if (key === 'watchlist' || key === 'panel-stocks') {
-                this._loadWatchlist();
-            }
-        });
+        this._settings.connectObject(
+            'changed', (settings, key) => {
+                if (key === 'watchlist' || key === 'panel-stocks') {
+                    this._loadWatchlist();
+                }
+            },
+            this
+        );
         
         // Initial load
         this._loadWatchlist();
@@ -814,10 +817,7 @@ class StockPopupMenu extends PanelMenu.Button {
             this._searchTimeout = null;
         }
         
-        if (this._settingsChangedId) {
-            this._settings.disconnect(this._settingsChangedId);
-            this._settingsChangedId = null;
-        }
+        this._settings.disconnectObject(this);
         
         // Only destroy shared data if this is the main menu
         SharedData.destroy();
@@ -844,18 +844,19 @@ class StockPanelButton extends PanelMenu.Button {
         SharedData.init();
         
         // Listen for settings changes
-        this._settingsChangedId = this._settings.connect('changed::chart-style', () => {
-            if (this._chartData) {
-                this._renderChart(this._chartData);
-            }
-        });
-        
-        // Listen for display settings changes
-        this._displaySettingsChangedId = this._settings.connect('changed', (settings, key) => {
-            if (key.startsWith('show-stock-')) {
-                this._updatePanelVisibility();
-            }
-        });
+        this._settings.connectObject(
+            'changed::chart-style', () => {
+                if (this._chartData) {
+                    this._renderChart(this._chartData);
+                }
+            },
+            'changed', (settings, key) => {
+                if (key.startsWith('show-stock-')) {
+                    this._updatePanelVisibility();
+                }
+            },
+            this
+        );
         
         // Panel button layout
         this._panelBox = new St.BoxLayout({
@@ -1465,15 +1466,7 @@ class StockPanelButton extends PanelMenu.Button {
     destroy() {
         SharedData.removeListener(this._updateCallback);
         
-        if (this._settingsChangedId) {
-            this._settings.disconnect(this._settingsChangedId);
-            this._settingsChangedId = null;
-        }
-        
-        if (this._displaySettingsChangedId) {
-            this._settings.disconnect(this._displaySettingsChangedId);
-            this._displaySettingsChangedId = null;
-        }
+        this._settings.disconnectObject(this);
         
         super.destroy();
     }
@@ -1530,17 +1523,20 @@ class DesktopStockWidget extends St.BoxLayout {
         SharedData.addListener(this._updateCallback);
         
         // Listen for settings changes
-        this._settingsChangedId = this._settings.connect('changed', (settings, key) => {
-            if (key === 'desktop-widget-opacity' || key === 'desktop-widget-scale') {
-                this._updateStyle();
-            } else if (key === 'desktop-widget-show-chart') {
-                this._toggleChartVisibility();
-            } else if (key === 'chart-style') {
-                if (this._chartData) {
-                    this._chartCanvas.queue_repaint();
+        this._settings.connectObject(
+            'changed', (settings, key) => {
+                if (key === 'desktop-widget-opacity' || key === 'desktop-widget-scale') {
+                    this._updateStyle();
+                } else if (key === 'desktop-widget-show-chart') {
+                    this._toggleChartVisibility();
+                } else if (key === 'chart-style') {
+                    if (this._chartData) {
+                        this._chartCanvas.queue_repaint();
+                    }
                 }
-            }
-        });
+            },
+            this
+        );
         
         // Setup drag handling
         this._setupDragHandling();
@@ -2067,10 +2063,7 @@ class DesktopStockWidget extends St.BoxLayout {
         
         SharedData.removeListener(this._updateCallback);
         
-        if (this._settingsChangedId) {
-            this._settings.disconnect(this._settingsChangedId);
-            this._settingsChangedId = null;
-        }
+        this._settings.disconnectObject(this);
         
         super.destroy();
     }
