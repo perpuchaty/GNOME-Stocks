@@ -187,7 +187,7 @@ export default class GNOMEStocksExtension extends Extension {
             if (moveMode) {
                 // Add to uiGroup on top for editing
                 Main.layoutManager.uiGroup.add_child(widget);
-                widget.set_style(widget.get_style() + ' border: 2px solid #4caf50;');
+                widget.add_style_class_name('stockbar-widget-move-mode');
             } else {
                 // Add to background group so it appears on desktop behind windows
                 // The background group contains the desktop wallpaper
@@ -251,7 +251,7 @@ export default class GNOMEStocksExtension extends Extension {
                 }
                 Main.layoutManager.uiGroup.add_child(widget);
                 Main.layoutManager.uiGroup.set_child_above_sibling(widget, null);
-                widget.set_style(widget.get_style() + ' border: 2px solid #4caf50;');
+                widget.add_style_class_name('stockbar-widget-move-mode');
                 widget.ease({
                     opacity: 255,
                     duration: 200,
@@ -263,8 +263,7 @@ export default class GNOMEStocksExtension extends Extension {
                     currentParent.remove_child(widget);
                 }
                 // Remove the border indicator
-                const currentStyle = widget.get_style() || '';
-                widget.set_style(currentStyle.replace(' border: 2px solid #4caf50;', ''));
+                widget.remove_style_class_name('stockbar-widget-move-mode');
                 
                 // Add to background group
                 const bgManager = Main.layoutManager._bgManagers?.[0];

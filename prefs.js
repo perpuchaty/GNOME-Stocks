@@ -10,6 +10,7 @@ import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Ex
 export default class GNOMEStocksPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
+        const api = new StockAPI();
 
         // Create a preferences page
         const page = new Adw.PreferencesPage({
@@ -69,6 +70,42 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         );
 
         appearanceGroup.add(fontSizeRow);
+
+        // Watchlist label order
+        const labelOrderRow = new Adw.ComboRow({
+            title: _('Watchlist Label Order'),
+            subtitle: _('Choose which label is larger in the watchlist'),
+        });
+
+        const labelOrderModel = new Gtk.StringList();
+        labelOrderModel.append(_('Symbol above Name'));
+        labelOrderModel.append(_('Name above Symbol'));
+        labelOrderRow.model = labelOrderModel;
+
+        const labelOrderMap = { 'symbol-first': 0, 'name-first': 1 };
+        const reverseLabelOrderMap = ['symbol-first', 'name-first'];
+        labelOrderRow.selected = labelOrderMap[settings.get_string('watchlist-label-order')] ?? 0;
+
+        labelOrderRow.connect('notify::selected', () => {
+            settings.set_string('watchlist-label-order', reverseLabelOrderMap[labelOrderRow.selected]);
+        });
+
+        appearanceGroup.add(labelOrderRow);
+
+        // Show secondary watchlist label
+        const showSecondaryLabelRow = new Adw.SwitchRow({
+            title: _('Show Secondary Label'),
+            subtitle: _('Show or hide the smaller line in watchlist items'),
+        });
+
+        settings.bind(
+            'watchlist-show-secondary-label',
+            showSecondaryLabelRow,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
+        appearanceGroup.add(showSecondaryLabelRow);
 
         // Chart style
         const chartStyleRow = new Adw.ComboRow({
@@ -249,6 +286,79 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         });
         page.add(refreshGroup);
 
+        // Custom stock names
+        const customNamesGroup = new Adw.PreferencesGroup({
+            title: _('Custom Stock Names'),
+            description: _('Override company names shown in the watchlist'),
+        });
+        page.add(customNamesGroup);
+
+        const rebuildCustomNames = async () => {
+            let child = customNamesGroup.get_first_child();
+            while (child) {
+                const next = child.get_next_sibling();
+                customNamesGroup.remove(child);
+                child = next;
+            }
+
+            const watchlist = settings.get_strv('watchlist');
+            if (watchlist.length === 0) {
+                const emptyRow = new Adw.ActionRow({
+                    title: _('No watchlist items yet'),
+                    subtitle: _('Add stocks to the watchlist to customize their names.'),
+                });
+                customNamesGroup.add(emptyRow);
+                return;
+            }
+
+            const nameMap = {};
+            try {
+                const quotes = await api.getMultipleQuotes(watchlist);
+                for (const quote of quotes) {
+                    if (!quote.error) {
+                        nameMap[quote.symbol] = quote.name || quote.displaySymbol || quote.symbol;
+                    }
+                }
+            } catch (e) {
+                console.debug(`GNOME Stocks: Error loading names for prefs: ${e.message}`);
+            }
+
+            let customNames = {};
+            try {
+                customNames = JSON.parse(settings.get_string('custom-stock-names') || '{}');
+            } catch {
+                customNames = {};
+            }
+
+            for (const symbol of watchlist) {
+                const companyName = nameMap[symbol] || symbol;
+                const title = companyName === symbol ? symbol : `${symbol} - ${companyName}`;
+                const entryRow = new Adw.EntryRow({
+                    title: title,
+                    text: customNames[symbol] || '',
+                });
+
+                entryRow.connect('changed', () => {
+                    const updatedNames = {...customNames};
+                    const newValue = entryRow.get_text().trim();
+
+                    if (newValue.length === 0) {
+                        delete updatedNames[symbol];
+                    } else {
+                        updatedNames[symbol] = newValue;
+                    }
+
+                    settings.set_string('custom-stock-names', JSON.stringify(updatedNames));
+                    customNames = updatedNames;
+                });
+
+                customNamesGroup.add(entryRow);
+            }
+        };
+
+        rebuildCustomNames();
+        settings.connect('changed::watchlist', rebuildCustomNames);
+
         // Refresh interval
         const refreshRow = new Adw.SpinRow({
             title: _('Refresh Interval'),
@@ -277,8 +387,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
             description: _('Search and manage your watched stocks'),
         });
         page.add(watchlistGroup);
-
-        const api = new StockAPI();
 
         // Search row
         const searchRow = new Adw.EntryRow({

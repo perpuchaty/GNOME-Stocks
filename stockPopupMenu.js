@@ -14,6 +14,42 @@ import {LogoCache} from './logoCache.js';
 
 const ICON_SIZE = 16;
 const PANEL_ICON_SIZE = 18;
+const LABEL_ORDER_NAME_FIRST = 'name-first';
+
+function getFontSizeClass(size) {
+    const value = Math.max(5, Math.min(32, Math.round(size)));
+    return `stockbar-font-${value}`;
+}
+
+function getChangeClass(change) {
+    if (change > 0) return 'stockbar-change-positive';
+    if (change < 0) return 'stockbar-change-negative';
+    return 'stockbar-change-neutral';
+}
+
+function getWidgetScaleClass(scale) {
+    const value = Math.max(5, Math.min(20, Math.round(scale * 10)));
+    return `stockbar-widget-scale-${value}`;
+}
+
+function getWidgetOpacityClass(opacity) {
+    const clamped = Math.max(10, Math.min(100, Math.round(opacity / 5) * 5));
+    return `stockbar-widget-opacity-${clamped}`;
+}
+
+function getCustomNamesMap(settings) {
+    try {
+        return JSON.parse(settings.get_string('custom-stock-names') || '{}');
+    } catch (e) {
+        console.debug(`GNOME Stocks: Error parsing custom stock names: ${e.message}`);
+        return {};
+    }
+}
+
+function getCustomName(settings, symbol, fallbackName) {
+    const customNames = getCustomNamesMap(settings);
+    return customNames[symbol] || fallbackName;
+}
 
 // Shared data store for stock quotes
 const SharedData = {
@@ -110,7 +146,7 @@ class StockPopupMenu extends PanelMenu.Button {
         // Connect settings changes
         this._settings.connectObject(
             'changed', (settings, key) => {
-                if (key === 'watchlist' || key === 'panel-stocks') {
+                if (key === 'watchlist' || key === 'panel-stocks' || key === 'custom-stock-names' || key === 'watchlist-label-order' || key === 'watchlist-show-secondary-label') {
                     this._loadWatchlist();
                 }
             },
@@ -432,6 +468,7 @@ class StockPopupMenu extends PanelMenu.Button {
             vertical: true,
             x_expand: true
         });
+        this._infoBox = infoBox;
         
         // Add crypto indicator if applicable
         const isCrypto = stock.isCrypto || stock.type === 'CRYPTOCURRENCY' || stock.symbol.endsWith('-USD');
@@ -527,6 +564,9 @@ class StockPopupMenu extends PanelMenu.Button {
 
     async _loadWatchlist() {
         const watchlist = this._settings.get_strv('watchlist');
+        const customNames = getCustomNamesMap(this._settings);
+        const labelOrder = this._settings.get_string('watchlist-label-order');
+        const showSecondaryLabel = this._settings.get_boolean('watchlist-show-secondary-label');
         
         // Clear current items
         this._watchlistBox.destroy_all_children();
@@ -542,7 +582,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         // Add loading placeholders
         for (const symbol of watchlist) {
-            this._addWatchlistItem(symbol, null);
+            this._addWatchlistItem(symbol, null, customNames, labelOrder, showSecondaryLabel);
         }
         
         // Fetch quotes
@@ -573,7 +613,8 @@ class StockPopupMenu extends PanelMenu.Button {
         }
     }
 
-    _addWatchlistItem(symbol, quote) {
+    _addWatchlistItem(symbol, quote, customNames, labelOrder) {
+        const showSecondaryLabel = this._settings.get_boolean('watchlist-show-secondary-label');
         const item = new St.BoxLayout({
             style_class: 'stockbar-watchlist-item',
             reactive: true,
@@ -614,22 +655,36 @@ class StockPopupMenu extends PanelMenu.Button {
             cleanSymbol = cleanSymbol.replace('-USD', '');
         }
         const displaySymbol = isCrypto ? `₿ ${cleanSymbol}` : cleanSymbol;
+        const displayName = customNames?.[symbol] || quote?.name || 'Loading...';
+        const isNameFirst = labelOrder === LABEL_ORDER_NAME_FIRST;
         
         const symbolLabel = new St.Label({
-            text: displaySymbol,
-            style_class: 'stockbar-stock-symbol-label',
-            style: `font-size: ${fontSize}px;`
+            text: displaySymbol
         });
         symbolLabel.set_name(`symbol-${symbol}`);
-        infoBox.add_child(symbolLabel);
         
         const nameLabel = new St.Label({
-            text: quote?.name || 'Loading...',
-            style_class: 'stockbar-stock-name-label',
-            style: `font-size: ${smallFontSize}px;`
+            text: displayName
         });
         nameLabel.set_name(`name-${symbol}`);
-        infoBox.add_child(nameLabel);
+
+        const topLabel = isNameFirst ? nameLabel : symbolLabel;
+        const bottomLabel = isNameFirst ? symbolLabel : nameLabel;
+
+        topLabel.style_class = `stockbar-stock-symbol-label ${getFontSizeClass(fontSize)}`;
+        bottomLabel.style_class = `stockbar-stock-name-label ${getFontSizeClass(smallFontSize)}`;
+        
+        if (isNameFirst) {
+            infoBox.add_child(nameLabel);
+            if (showSecondaryLabel) {
+                infoBox.add_child(symbolLabel);
+            }
+        } else {
+            infoBox.add_child(symbolLabel);
+            if (showSecondaryLabel) {
+                infoBox.add_child(nameLabel);
+            }
+        }
         
         item.add_child(infoBox);
         
@@ -641,21 +696,19 @@ class StockPopupMenu extends PanelMenu.Button {
         
         const priceLabel = new St.Label({
             text: quote ? `$${quote.price.toFixed(2)}` : '--',
-            style_class: 'stockbar-stock-price-label',
-            style: `font-size: ${fontSize}px;`
+            style_class: `stockbar-stock-price-label ${getFontSizeClass(fontSize)}`
         });
         priceLabel.set_name(`price-${symbol}`);
         priceBox.add_child(priceLabel);
         
-        const changeColor = quote ? (quote.change >= 0 ? '#4caf50' : '#f44336') : '#888';
         const changeText = quote ? 
             `${quote.change >= 0 ? '+' : ''}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)` : 
             '--';
         
+        const changeClass = getChangeClass(quote ? quote.change : 0);
         const changeLabel = new St.Label({
             text: changeText,
-            style_class: 'stockbar-stock-change-label',
-            style: `font-size: ${smallFontSize}px; color: ${changeColor};`
+            style_class: `stockbar-stock-change-label ${getFontSizeClass(smallFontSize)} ${changeClass}`
         });
         changeLabel.set_name(`change-${symbol}`);
         priceBox.add_child(changeLabel);
@@ -770,6 +823,9 @@ class StockPopupMenu extends PanelMenu.Button {
         this._watchlistBox.destroy_all_children();
         
         const watchlist = this._settings.get_strv('watchlist');
+        const customNames = getCustomNamesMap(this._settings);
+        const labelOrder = this._settings.get_string('watchlist-label-order');
+        const showSecondaryLabel = this._settings.get_boolean('watchlist-show-secondary-label');
         
         if (watchlist.length === 0) {
             const emptyLabel = new St.Label({
@@ -782,7 +838,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         for (const symbol of watchlist) {
             const quote = SharedData.getQuote(symbol) || null;
-            this._addWatchlistItem(symbol, quote);
+            this._addWatchlistItem(symbol, quote, customNames, labelOrder, showSecondaryLabel);
         }
     }
 
@@ -946,10 +1002,10 @@ class StockPanelButton extends PanelMenu.Button {
             this._priceLabel.set_text(`$${quote.price.toFixed(2)}`);
             
             // Update change
-            const changeColor = quote.change >= 0 ? '#4caf50' : '#f44336';
             const changeSymbol = quote.change >= 0 ? '▲' : '▼';
             this._changeLabel.set_text(`${changeSymbol}${Math.abs(quote.changePercent).toFixed(1)}%`);
-            this._changeLabel.set_style(`color: ${changeColor};`);
+            const changeClass = getChangeClass(quote.change);
+            this._changeLabel.style_class = `stockbar-panel-change-label ${changeClass}`;
             
             // Update menu header
             this._updateMenuHeader(quote);
@@ -1169,10 +1225,10 @@ class StockPanelButton extends PanelMenu.Button {
         this._menuName.set_text(quote.name || this._symbol);
         this._menuPrice.set_text(`$${quote.price.toFixed(2)}`);
         
-        const changeColor = quote.change >= 0 ? '#4caf50' : '#f44336';
         const changeSign = quote.change >= 0 ? '+' : '';
         this._menuChange.set_text(`${changeSign}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)`);
-        this._menuChange.set_style(`color: ${changeColor};`);
+        const changeClass = getChangeClass(quote.change);
+        this._menuChange.style_class = `stockbar-chart-menu-change ${changeClass}`;
         
         // Load menu logo
         const logoUrl = SharedData.api?.getLogoUrl(this._symbol, quote.name);
@@ -1220,11 +1276,10 @@ class StockPanelButton extends PanelMenu.Button {
         const priceChange = lastPrice - firstPrice;
         const priceChangePercent = (priceChange / firstPrice) * 100;
         
-        const changeColor = priceChange >= 0 ? '#4caf50' : '#f44336';
         const changeSign = priceChange >= 0 ? '+' : '';
         this._chartInfoLabel.set_text(`Change: ${changeSign}$${priceChange.toFixed(2)} (${changeSign}${priceChangePercent.toFixed(2)}%)`);
-        this._chartInfoLabel.style_class = 'stockbar-chart-info-active';
-        this._chartInfoLabel.set_style(`color: ${changeColor};`);
+        const changeClass = getChangeClass(priceChange);
+        this._chartInfoLabel.style_class = `stockbar-chart-info-active ${changeClass}`;
         
         // Trigger repaint
         this._chartCanvas.queue_repaint();
@@ -1468,20 +1523,16 @@ class StockPanelButton extends PanelMenu.Button {
 export const DesktopStockWidget = GObject.registerClass(
 class DesktopStockWidget extends St.BoxLayout {
     _init(symbol, settings, api, logoCache) {
-        const opacity = settings.get_int('desktop-widget-opacity') / 100;
+        const opacity = settings.get_int('desktop-widget-opacity');
         const scale = settings.get_double('desktop-widget-scale');
+        const opacityClass = getWidgetOpacityClass(opacity);
+        const scaleClass = getWidgetScaleClass(scale);
         
         super._init({
             vertical: true,
             reactive: true,
             track_hover: true,
-            style: `
-                background-color: rgba(30, 30, 30, ${opacity});
-                border-radius: 12px;
-                padding: 12px;
-                min-width: ${280 * scale}px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            `
+            style_class: `stockbar-desktop-widget ${opacityClass} ${scaleClass}`
         });
         
         this._symbol = symbol;
@@ -1525,6 +1576,8 @@ class DesktopStockWidget extends St.BoxLayout {
                     if (this._chartData) {
                         this._chartCanvas.queue_repaint();
                     }
+                } else if (key === 'custom-stock-names' || key === 'watchlist-label-order') {
+                    this._updateData();
                 }
             },
             this
@@ -1540,7 +1593,7 @@ class DesktopStockWidget extends St.BoxLayout {
         
         // Header with drag handle
         const header = new St.BoxLayout({
-            style: `spacing: ${8 * scale}px; margin-bottom: ${8 * scale}px;`
+            style_class: 'stockbar-widget-header'
         });
         
         // Logo
@@ -1565,6 +1618,7 @@ class DesktopStockWidget extends St.BoxLayout {
             vertical: true,
             x_expand: true
         });
+        this._infoBox = infoBox;
         
         const isCrypto = quote?.isCrypto || this._symbol.endsWith('-USD');
         let cleanSymbol = quote?.displaySymbol || this._symbol;
@@ -1572,18 +1626,22 @@ class DesktopStockWidget extends St.BoxLayout {
             cleanSymbol = cleanSymbol.replace('-USD', '');
         }
         const displaySymbol = isCrypto ? `₿ ${cleanSymbol}` : cleanSymbol;
+        const displayName = getCustomName(this._settings, this._symbol, quote?.name || 'Loading...');
+        const isNameFirst = this._settings.get_string('watchlist-label-order') === LABEL_ORDER_NAME_FIRST;
         
         this._symbolLabel = new St.Label({
             text: displaySymbol,
-            style: `font-weight: bold; font-size: ${14 * scale}px;`
+            style_class: `stockbar-widget-symbol-label ${getFontSizeClass(isNameFirst ? 10 * scale : 14 * scale)}`
         });
-        infoBox.add_child(this._symbolLabel);
         
         this._nameLabel = new St.Label({
-            text: quote?.name || 'Loading...',
-            style: `font-size: ${10 * scale}px; color: #888;`
+            text: displayName,
+            style_class: `stockbar-widget-name ${getFontSizeClass(isNameFirst ? 14 * scale : 10 * scale)}`
         });
+        infoBox.add_child(this._symbolLabel);
         infoBox.add_child(this._nameLabel);
+
+        this._applyWidgetLabelOrder(scale, isNameFirst);
         
         header.add_child(infoBox);
         
@@ -1594,14 +1652,15 @@ class DesktopStockWidget extends St.BoxLayout {
         
         this._priceLabel = new St.Label({
             text: quote ? `$${quote.price.toFixed(2)}` : '--',
-            style: `font-weight: bold; font-size: ${16 * scale}px;`
+            style_class: `stockbar-widget-price-label ${getFontSizeClass(16 * scale)}`
         });
         priceBox.add_child(this._priceLabel);
         
-        const changeColor = quote ? (quote.change >= 0 ? '#4caf50' : '#f44336') : '#888';
+        const changeValue = quote ? quote.change : 0;
+        const changeClass = getChangeClass(changeValue);
         this._changeLabel = new St.Label({
             text: quote ? `${quote.change >= 0 ? '+' : ''}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)` : '--',
-            style: `font-size: ${10 * scale}px; color: ${changeColor};`
+            style_class: `stockbar-widget-change-label ${getFontSizeClass(10 * scale)} ${changeClass}`
         });
         priceBox.add_child(this._changeLabel);
         
@@ -1611,7 +1670,7 @@ class DesktopStockWidget extends St.BoxLayout {
         
         // Time range buttons
         const rangeBox = new St.BoxLayout({
-            style: `spacing: ${4 * scale}px; margin-bottom: ${6 * scale}px;`
+            style_class: 'stockbar-widget-range-box'
         });
         
         const ranges = [
@@ -1627,13 +1686,15 @@ class DesktopStockWidget extends St.BoxLayout {
         this._selectedRange = this._loadSelectedRange();
         
         for (const r of ranges) {
+            const sizeClass = getFontSizeClass(9 * scale);
             const btn = new St.Button({
                 label: r.label,
                 reactive: true,
                 can_focus: true,
                 track_hover: true,
-                style: `padding: ${3 * scale}px ${6 * scale}px; border-radius: 4px; font-size: ${9 * scale}px; background-color: rgba(255,255,255,0.1);`
+                style_class: `stockbar-widget-range-button ${sizeClass}`
             });
+            btn._sizeClass = sizeClass;
             btn._rangeData = r;
             btn.connect('clicked', () => {
                 this._selectedRange = r;
@@ -1658,12 +1719,11 @@ class DesktopStockWidget extends St.BoxLayout {
         this._chartContainer = new St.BoxLayout({
             vertical: true,
             visible: showChart,
-            style: `padding: ${6 * scale}px; background-color: rgba(0,0,0,0.2); border-radius: 6px;`
+            style_class: 'stockbar-widget-chart-container'
         });
         
         this._chartCanvas = new St.DrawingArea({
-            width: Math.round(260 * scale),
-            height: Math.round(80 * scale)
+            style_class: 'stockbar-widget-chart-canvas'
         });
         this._chartCanvas.connect('repaint', (area) => this._drawChart(area));
         this._chartContainer.add_child(this._chartCanvas);
@@ -1671,7 +1731,7 @@ class DesktopStockWidget extends St.BoxLayout {
         // Chart info
         this._chartInfoLabel = new St.Label({
             text: 'Loading...',
-            style: `font-size: ${9 * scale}px; color: #888; margin-top: ${4 * scale}px;`
+            style_class: `stockbar-widget-chart-info ${getFontSizeClass(9 * scale)}`
         });
         this._chartContainer.add_child(this._chartInfoLabel);
         
@@ -1679,28 +1739,48 @@ class DesktopStockWidget extends St.BoxLayout {
         
         // Stats row
         const statsBox = new St.BoxLayout({
-            style: `spacing: ${12 * scale}px; margin-top: ${6 * scale}px;`
+            style_class: 'stockbar-widget-stats-box'
         });
         
         this._highLabel = new St.Label({
             text: 'H: --',
-            style: `font-size: ${9 * scale}px; color: #4caf50;`
+            style_class: `stockbar-widget-stat-high ${getFontSizeClass(9 * scale)}`
         });
         statsBox.add_child(this._highLabel);
         
         this._lowLabel = new St.Label({
             text: 'L: --',
-            style: `font-size: ${9 * scale}px; color: #f44336;`
+            style_class: `stockbar-widget-stat-low ${getFontSizeClass(9 * scale)}`
         });
         statsBox.add_child(this._lowLabel);
         
         this._volumeLabel = new St.Label({
             text: 'Vol: --',
-            style: `font-size: ${9 * scale}px; color: #888;`
+            style_class: `stockbar-widget-stat-volume ${getFontSizeClass(9 * scale)}`
         });
         statsBox.add_child(this._volumeLabel);
         
         this.add_child(statsBox);
+    }
+
+    _applyWidgetLabelOrder(scale, isNameFirst) {
+        if (!this._infoBox || !this._symbolLabel || !this._nameLabel) {
+            return;
+        }
+
+        this._symbolLabel.style_class = `stockbar-widget-symbol-label ${getFontSizeClass(isNameFirst ? 10 * scale : 14 * scale)}`;
+        this._nameLabel.style_class = `stockbar-widget-name ${getFontSizeClass(isNameFirst ? 14 * scale : 10 * scale)}`;
+
+        this._infoBox.remove_child(this._symbolLabel);
+        this._infoBox.remove_child(this._nameLabel);
+
+        if (isNameFirst) {
+            this._infoBox.add_child(this._nameLabel);
+            this._infoBox.add_child(this._symbolLabel);
+        } else {
+            this._infoBox.add_child(this._symbolLabel);
+            this._infoBox.add_child(this._nameLabel);
+        }
     }
     
     _setupDragHandling() {
@@ -1816,33 +1896,62 @@ class DesktopStockWidget extends St.BoxLayout {
     }
     
     _highlightRangeButton(activeBtn) {
-        const scale = this._scale;
         for (const btn of this._rangeButtons) {
             if (btn === activeBtn) {
-                btn.set_style(`padding: ${3 * scale}px ${6 * scale}px; border-radius: 4px; font-size: ${9 * scale}px; background-color: rgba(255,255,255,0.2);`);
+                btn.style_class = `stockbar-widget-range-button-active ${btn._sizeClass || ''}`.trim();
             } else {
-                btn.set_style(`padding: ${3 * scale}px ${6 * scale}px; border-radius: 4px; font-size: ${9 * scale}px;`);
+                btn.style_class = `stockbar-widget-range-button ${btn._sizeClass || ''}`.trim();
             }
         }
     }
     
     _updateStyle() {
-        const opacity = this._settings.get_int('desktop-widget-opacity') / 100;
+        const opacity = this._settings.get_int('desktop-widget-opacity');
         const scale = this._settings.get_double('desktop-widget-scale');
         this._scale = scale;
-        
-        this.set_style(`
-            background-color: rgba(30, 30, 30, ${opacity});
-            border-radius: 12px;
-            padding: 12px;
-            min-width: ${280 * scale}px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        `);
-        
-        // Update chart size
-        if (this._chartCanvas) {
-            this._chartCanvas.set_width(Math.round(260 * scale));
-            this._chartCanvas.set_height(Math.round(80 * scale));
+        const opacityClass = getWidgetOpacityClass(opacity);
+        const scaleClass = getWidgetScaleClass(scale);
+        this.style_class = `stockbar-desktop-widget ${opacityClass} ${scaleClass}`;
+
+        const isNameFirst = this._settings.get_string('watchlist-label-order') === LABEL_ORDER_NAME_FIRST;
+        this._applyWidgetLabelOrder(scale, isNameFirst);
+
+        if (this._priceLabel) {
+            this._priceLabel.style_class = `stockbar-widget-price-label ${getFontSizeClass(16 * scale)}`;
+        }
+        if (this._changeLabel) {
+            const quote = SharedData.getQuote(this._symbol);
+            const changeValue = quote?.change ?? 0;
+            const changeClass = getChangeClass(changeValue);
+            this._changeLabel.style_class = `stockbar-widget-change-label ${getFontSizeClass(10 * scale)} ${changeClass}`;
+        }
+        if (this._chartInfoLabel) {
+            let chartClass = `stockbar-widget-chart-info ${getFontSizeClass(9 * scale)}`;
+            if (this._chartData?.prices?.length) {
+                const prices = this._chartData.prices.map(p => p.close || p.price || p);
+                const changeValue = prices[prices.length - 1] - prices[0];
+                chartClass = `${chartClass} ${getChangeClass(changeValue)}`;
+            }
+            this._chartInfoLabel.style_class = chartClass;
+        }
+        if (this._highLabel) {
+            this._highLabel.style_class = `stockbar-widget-stat-high ${getFontSizeClass(9 * scale)}`;
+        }
+        if (this._lowLabel) {
+            this._lowLabel.style_class = `stockbar-widget-stat-low ${getFontSizeClass(9 * scale)}`;
+        }
+        if (this._volumeLabel) {
+            this._volumeLabel.style_class = `stockbar-widget-stat-volume ${getFontSizeClass(9 * scale)}`;
+        }
+
+        if (this._rangeButtons?.length) {
+            for (const btn of this._rangeButtons) {
+                btn._sizeClass = getFontSizeClass(9 * scale);
+            }
+            const activeBtn = this._rangeButtons.find(btn => btn._rangeData?.range === this._selectedRange?.range);
+            if (activeBtn) {
+                this._highlightRangeButton(activeBtn);
+            }
         }
     }
     
@@ -1861,14 +1970,16 @@ class DesktopStockWidget extends St.BoxLayout {
             cleanSymbol = cleanSymbol.replace('-USD', '');
         }
         const displaySymbol = isCrypto ? `₿ ${cleanSymbol}` : cleanSymbol;
+        const displayName = getCustomName(this._settings, this._symbol, quote.name || '');
+        const isNameFirst = this._settings.get_string('watchlist-label-order') === LABEL_ORDER_NAME_FIRST;
         
         this._symbolLabel.set_text(displaySymbol);
-        this._nameLabel.set_text(quote.name || '');
+        this._nameLabel.set_text(displayName);
+        this._applyWidgetLabelOrder(this._scale, isNameFirst);
         this._priceLabel.set_text(`$${quote.price.toFixed(2)}`);
         
-        const changeColor = quote.change >= 0 ? '#4caf50' : '#f44336';
         this._changeLabel.set_text(`${quote.change >= 0 ? '+' : ''}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)`);
-        this._changeLabel.set_style(`font-size: ${10 * this._scale}px; color: ${changeColor};`);
+        this._changeLabel.style_class = `stockbar-widget-change-label ${getFontSizeClass(10 * this._scale)} ${getChangeClass(quote.change)}`;
     }
     
     async _loadChart(range = '1mo', interval = '1d') {
@@ -1909,10 +2020,8 @@ class DesktopStockWidget extends St.BoxLayout {
                 const lastPrice = prices[prices.length - 1];
                 const change = lastPrice - firstPrice;
                 const changePercent = (change / firstPrice) * 100;
-                const changeColor = change >= 0 ? '#4caf50' : '#f44336';
-                
                 this._chartInfoLabel.set_text(`Change: ${change >= 0 ? '+' : ''}$${change.toFixed(2)} (${change >= 0 ? '+' : ''}${changePercent.toFixed(2)}%)`);
-                this._chartInfoLabel.set_style(`font-size: ${9 * this._scale}px; color: ${changeColor}; margin-top: ${4 * this._scale}px;`);
+                this._chartInfoLabel.style_class = `stockbar-widget-chart-info ${getFontSizeClass(9 * this._scale)} ${getChangeClass(change)}`;
             }
         } catch (e) {
             console.debug(`GNOME Stocks: Error loading chart for desktop widget: ${e.message}`);

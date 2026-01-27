@@ -649,6 +649,7 @@
 .stockbar-desktop-widget {
     border-radius: 12px;
     padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .stockbar-widget-chart-container {
@@ -658,6 +659,14 @@
 
 .stockbar-widget-name {
     color: #888888;
+}
+
+.stockbar-widget-symbol-label {
+    font-weight: bold;
+}
+
+.stockbar-widget-price-label {
+    font-weight: bold;
 }
 
 .stockbar-widget-range-button {
@@ -684,4 +693,640 @@
 
 .stockbar-widget-stat-volume {
     color: #888888;
+}
+
+.stockbar-widget-move-mode {
+    border: 2px solid #4caf50;
+}
+
+/* ============================================
+   FONT SIZE UTILITIES
+   ============================================ */
+.stockbar-font-5 {
+    font-size: 5px;
+}
+.stockbar-font-6 {
+    font-size: 6px;
+}
+.stockbar-font-7 {
+    font-size: 7px;
+}
+.stockbar-font-8 {
+    font-size: 8px;
+}
+.stockbar-font-9 {
+    font-size: 9px;
+}
+.stockbar-font-10 {
+    font-size: 10px;
+}
+.stockbar-font-11 {
+    font-size: 11px;
+}
+.stockbar-font-12 {
+    font-size: 12px;
+}
+.stockbar-font-13 {
+    font-size: 13px;
+}
+.stockbar-font-14 {
+    font-size: 14px;
+}
+.stockbar-font-15 {
+    font-size: 15px;
+}
+.stockbar-font-16 {
+    font-size: 16px;
+}
+.stockbar-font-17 {
+    font-size: 17px;
+}
+.stockbar-font-18 {
+    font-size: 18px;
+}
+.stockbar-font-19 {
+    font-size: 19px;
+}
+.stockbar-font-20 {
+    font-size: 20px;
+}
+.stockbar-font-21 {
+    font-size: 21px;
+}
+.stockbar-font-22 {
+    font-size: 22px;
+}
+.stockbar-font-23 {
+    font-size: 23px;
+}
+.stockbar-font-24 {
+    font-size: 24px;
+}
+.stockbar-font-25 {
+    font-size: 25px;
+}
+.stockbar-font-26 {
+    font-size: 26px;
+}
+.stockbar-font-27 {
+    font-size: 27px;
+}
+.stockbar-font-28 {
+    font-size: 28px;
+}
+.stockbar-font-29 {
+    font-size: 29px;
+}
+.stockbar-font-30 {
+    font-size: 30px;
+}
+.stockbar-font-31 {
+    font-size: 31px;
+}
+.stockbar-font-32 {
+    font-size: 32px;
+}
+
+/* ============================================
+   DESKTOP WIDGET OPACITY UTILITIES
+   ============================================ */
+.stockbar-widget-opacity-10 {
+    background-color: rgba(30, 30, 30, 0.10);
+}
+.stockbar-widget-opacity-15 {
+    background-color: rgba(30, 30, 30, 0.15);
+}
+.stockbar-widget-opacity-20 {
+    background-color: rgba(30, 30, 30, 0.20);
+}
+.stockbar-widget-opacity-25 {
+    background-color: rgba(30, 30, 30, 0.25);
+}
+.stockbar-widget-opacity-30 {
+    background-color: rgba(30, 30, 30, 0.30);
+}
+.stockbar-widget-opacity-35 {
+    background-color: rgba(30, 30, 30, 0.35);
+}
+.stockbar-widget-opacity-40 {
+    background-color: rgba(30, 30, 30, 0.40);
+}
+.stockbar-widget-opacity-45 {
+    background-color: rgba(30, 30, 30, 0.45);
+}
+.stockbar-widget-opacity-50 {
+    background-color: rgba(30, 30, 30, 0.50);
+}
+.stockbar-widget-opacity-55 {
+    background-color: rgba(30, 30, 30, 0.55);
+}
+.stockbar-widget-opacity-60 {
+    background-color: rgba(30, 30, 30, 0.60);
+}
+.stockbar-widget-opacity-65 {
+    background-color: rgba(30, 30, 30, 0.65);
+}
+.stockbar-widget-opacity-70 {
+    background-color: rgba(30, 30, 30, 0.70);
+}
+.stockbar-widget-opacity-75 {
+    background-color: rgba(30, 30, 30, 0.75);
+}
+.stockbar-widget-opacity-80 {
+    background-color: rgba(30, 30, 30, 0.80);
+}
+.stockbar-widget-opacity-85 {
+    background-color: rgba(30, 30, 30, 0.85);
+}
+.stockbar-widget-opacity-90 {
+    background-color: rgba(30, 30, 30, 0.90);
+}
+.stockbar-widget-opacity-95 {
+    background-color: rgba(30, 30, 30, 0.95);
+}
+.stockbar-widget-opacity-100 {
+    background-color: rgba(30, 30, 30, 1.00);
+}
+
+/* ============================================
+   DESKTOP WIDGET SCALE UTILITIES
+   ============================================ */
+.stockbar-widget-scale-5 {
+    min-width: 140px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-header {
+    spacing: 4px;
+    margin-bottom: 4px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-range-box {
+    spacing: 2px;
+    margin-bottom: 3px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-range-button {
+    padding: 2px 3px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-chart-container {
+    padding: 3px;
+    border-radius: 3px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-chart-canvas {
+    width: 130px;
+    height: 40px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-chart-info {
+    margin-top: 2px;
+}
+.stockbar-widget-scale-5 .stockbar-widget-stats-box {
+    spacing: 6px;
+    margin-top: 3px;
+}
+
+.stockbar-widget-scale-6 {
+    min-width: 168px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-header {
+    spacing: 5px;
+    margin-bottom: 5px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-range-box {
+    spacing: 2px;
+    margin-bottom: 4px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-range-button {
+    padding: 2px 4px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-chart-container {
+    padding: 4px;
+    border-radius: 4px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-chart-canvas {
+    width: 156px;
+    height: 48px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-chart-info {
+    margin-top: 2px;
+}
+.stockbar-widget-scale-6 .stockbar-widget-stats-box {
+    spacing: 7px;
+    margin-top: 4px;
+}
+
+.stockbar-widget-scale-7 {
+    min-width: 196px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-header {
+    spacing: 6px;
+    margin-bottom: 6px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-range-box {
+    spacing: 3px;
+    margin-bottom: 4px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-range-button {
+    padding: 2px 4px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-chart-container {
+    padding: 4px;
+    border-radius: 4px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-chart-canvas {
+    width: 182px;
+    height: 56px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-chart-info {
+    margin-top: 3px;
+}
+.stockbar-widget-scale-7 .stockbar-widget-stats-box {
+    spacing: 8px;
+    margin-top: 4px;
+}
+
+.stockbar-widget-scale-8 {
+    min-width: 224px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-header {
+    spacing: 6px;
+    margin-bottom: 6px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-range-box {
+    spacing: 3px;
+    margin-bottom: 5px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-range-button {
+    padding: 2px 5px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-chart-container {
+    padding: 5px;
+    border-radius: 5px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-chart-canvas {
+    width: 208px;
+    height: 64px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-chart-info {
+    margin-top: 3px;
+}
+.stockbar-widget-scale-8 .stockbar-widget-stats-box {
+    spacing: 10px;
+    margin-top: 5px;
+}
+
+.stockbar-widget-scale-9 {
+    min-width: 252px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-header {
+    spacing: 7px;
+    margin-bottom: 7px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-range-box {
+    spacing: 4px;
+    margin-bottom: 5px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-range-button {
+    padding: 3px 5px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-chart-container {
+    padding: 5px;
+    border-radius: 5px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-chart-canvas {
+    width: 234px;
+    height: 72px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-chart-info {
+    margin-top: 4px;
+}
+.stockbar-widget-scale-9 .stockbar-widget-stats-box {
+    spacing: 11px;
+    margin-top: 5px;
+}
+
+.stockbar-widget-scale-10 {
+    min-width: 280px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-header {
+    spacing: 8px;
+    margin-bottom: 8px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-range-box {
+    spacing: 4px;
+    margin-bottom: 6px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-range-button {
+    padding: 3px 6px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-chart-container {
+    padding: 6px;
+    border-radius: 6px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-chart-canvas {
+    width: 260px;
+    height: 80px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-chart-info {
+    margin-top: 4px;
+}
+.stockbar-widget-scale-10 .stockbar-widget-stats-box {
+    spacing: 12px;
+    margin-top: 6px;
+}
+
+.stockbar-widget-scale-11 {
+    min-width: 308px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-header {
+    spacing: 9px;
+    margin-bottom: 9px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-range-box {
+    spacing: 4px;
+    margin-bottom: 7px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-range-button {
+    padding: 3px 7px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-chart-container {
+    padding: 7px;
+    border-radius: 7px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-chart-canvas {
+    width: 286px;
+    height: 88px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-chart-info {
+    margin-top: 4px;
+}
+.stockbar-widget-scale-11 .stockbar-widget-stats-box {
+    spacing: 13px;
+    margin-top: 7px;
+}
+
+.stockbar-widget-scale-12 {
+    min-width: 336px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-header {
+    spacing: 10px;
+    margin-bottom: 10px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-range-box {
+    spacing: 5px;
+    margin-bottom: 7px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-range-button {
+    padding: 4px 7px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-chart-container {
+    padding: 7px;
+    border-radius: 7px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-chart-canvas {
+    width: 312px;
+    height: 96px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-chart-info {
+    margin-top: 5px;
+}
+.stockbar-widget-scale-12 .stockbar-widget-stats-box {
+    spacing: 14px;
+    margin-top: 7px;
+}
+
+.stockbar-widget-scale-13 {
+    min-width: 364px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-header {
+    spacing: 10px;
+    margin-bottom: 10px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-range-box {
+    spacing: 5px;
+    margin-bottom: 8px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-range-button {
+    padding: 4px 8px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-chart-container {
+    padding: 8px;
+    border-radius: 8px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-chart-canvas {
+    width: 338px;
+    height: 104px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-chart-info {
+    margin-top: 5px;
+}
+.stockbar-widget-scale-13 .stockbar-widget-stats-box {
+    spacing: 16px;
+    margin-top: 8px;
+}
+
+.stockbar-widget-scale-14 {
+    min-width: 392px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-header {
+    spacing: 11px;
+    margin-bottom: 11px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-range-box {
+    spacing: 6px;
+    margin-bottom: 8px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-range-button {
+    padding: 4px 8px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-chart-container {
+    padding: 8px;
+    border-radius: 8px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-chart-canvas {
+    width: 364px;
+    height: 112px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-chart-info {
+    margin-top: 6px;
+}
+.stockbar-widget-scale-14 .stockbar-widget-stats-box {
+    spacing: 17px;
+    margin-top: 8px;
+}
+
+.stockbar-widget-scale-15 {
+    min-width: 420px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-header {
+    spacing: 12px;
+    margin-bottom: 12px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-range-box {
+    spacing: 6px;
+    margin-bottom: 9px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-range-button {
+    padding: 4px 9px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-chart-container {
+    padding: 9px;
+    border-radius: 9px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-chart-canvas {
+    width: 390px;
+    height: 120px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-chart-info {
+    margin-top: 6px;
+}
+.stockbar-widget-scale-15 .stockbar-widget-stats-box {
+    spacing: 18px;
+    margin-top: 9px;
+}
+
+.stockbar-widget-scale-16 {
+    min-width: 448px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-header {
+    spacing: 13px;
+    margin-bottom: 13px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-range-box {
+    spacing: 6px;
+    margin-bottom: 10px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-range-button {
+    padding: 5px 10px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-chart-container {
+    padding: 10px;
+    border-radius: 10px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-chart-canvas {
+    width: 416px;
+    height: 128px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-chart-info {
+    margin-top: 6px;
+}
+.stockbar-widget-scale-16 .stockbar-widget-stats-box {
+    spacing: 19px;
+    margin-top: 10px;
+}
+
+.stockbar-widget-scale-17 {
+    min-width: 476px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-header {
+    spacing: 14px;
+    margin-bottom: 14px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-range-box {
+    spacing: 7px;
+    margin-bottom: 10px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-range-button {
+    padding: 5px 10px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-chart-container {
+    padding: 10px;
+    border-radius: 10px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-chart-canvas {
+    width: 442px;
+    height: 136px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-chart-info {
+    margin-top: 7px;
+}
+.stockbar-widget-scale-17 .stockbar-widget-stats-box {
+    spacing: 20px;
+    margin-top: 10px;
+}
+
+.stockbar-widget-scale-18 {
+    min-width: 504px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-header {
+    spacing: 14px;
+    margin-bottom: 14px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-range-box {
+    spacing: 7px;
+    margin-bottom: 11px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-range-button {
+    padding: 5px 11px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-chart-container {
+    padding: 11px;
+    border-radius: 11px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-chart-canvas {
+    width: 468px;
+    height: 144px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-chart-info {
+    margin-top: 7px;
+}
+.stockbar-widget-scale-18 .stockbar-widget-stats-box {
+    spacing: 22px;
+    margin-top: 11px;
+}
+
+.stockbar-widget-scale-19 {
+    min-width: 532px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-header {
+    spacing: 15px;
+    margin-bottom: 15px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-range-box {
+    spacing: 8px;
+    margin-bottom: 11px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-range-button {
+    padding: 6px 11px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-chart-container {
+    padding: 11px;
+    border-radius: 11px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-chart-canvas {
+    width: 494px;
+    height: 152px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-chart-info {
+    margin-top: 8px;
+}
+.stockbar-widget-scale-19 .stockbar-widget-stats-box {
+    spacing: 23px;
+    margin-top: 11px;
+}
+
+.stockbar-widget-scale-20 {
+    min-width: 560px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-header {
+    spacing: 16px;
+    margin-bottom: 16px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-range-box {
+    spacing: 8px;
+    margin-bottom: 12px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-range-button {
+    padding: 6px 12px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-chart-container {
+    padding: 12px;
+    border-radius: 12px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-chart-canvas {
+    width: 520px;
+    height: 160px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-chart-info {
+    margin-top: 8px;
+}
+.stockbar-widget-scale-20 .stockbar-widget-stats-box {
+    spacing: 24px;
+    margin-top: 12px;
 }

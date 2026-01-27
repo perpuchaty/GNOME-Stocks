@@ -46,6 +46,21 @@
             <summary>Font size</summary>
             <description>Font size for the extension popup menu (8-24)</description>
         </key>
+        <key name="watchlist-label-order" type="s">
+            <default>'symbol-first'</default>
+            <summary>Watchlist label order</summary>
+            <description>Order of labels in watchlist items: symbol-first or name-first</description>
+        </key>
+        <key name="watchlist-show-secondary-label" type="b">
+            <default>true</default>
+            <summary>Show secondary watchlist label</summary>
+            <description>Show or hide the smaller secondary label in watchlist items</description>
+        </key>
+        <key name="custom-stock-names" type="s">
+            <default>'{}'</default>
+            <summary>Custom stock names</summary>
+            <description>JSON object mapping stock symbols to custom display names</description>
+        </key>
         <key name="panel-position" type="s">
             <default>'right'</default>
             <summary>Panel position</summary>
