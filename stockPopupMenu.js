@@ -177,6 +177,13 @@ class StockPopupMenu extends PanelMenu.Button {
             style_class: 'stockbar-search-entry',
             x_expand: true
         });
+
+        this._searchEntry.set_secondary_icon_name('edit-clear-symbolic');
+        this._searchEntry.set_secondary_icon(null);
+        this._searchEntry.connect('secondary-icon-clicked', () => {
+            this._searchEntry.set_text('');
+            this._clearSearchResults();
+        });
         
         this._searchEntry.clutter_text.connect('text-changed', () => {
             this._onSearchTextChanged();
@@ -330,6 +337,12 @@ class StockPopupMenu extends PanelMenu.Button {
 
     _onSearchTextChanged() {
         const text = this._searchEntry.get_text().trim();
+
+        if (text.length > 0) {
+            this._searchEntry.set_secondary_icon_name('edit-clear-symbolic');
+        } else {
+            this._searchEntry.set_secondary_icon(null);
+        }
         
         if (this._searchTimeout) {
             GLib.source_remove(this._searchTimeout);

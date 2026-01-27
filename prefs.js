@@ -352,6 +352,10 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
                     customNames = updatedNames;
                 });
 
+                entryRow.connect('activate', () => {
+                    window.set_focus(null);
+                });
+
                 customNamesGroup.add(entryRow);
             }
         };
@@ -392,6 +396,16 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         const searchRow = new Adw.EntryRow({
             title: _('Search for stocks...'),
         });
+
+        const clearSearchButton = new Gtk.Button({
+            icon_name: 'edit-clear-symbolic',
+            valign: Gtk.Align.CENTER,
+            css_classes: ['flat'],
+        });
+        clearSearchButton.connect('clicked', () => {
+            searchRow.set_text('');
+        });
+        searchRow.add_suffix(clearSearchButton);
 
         const searchButton = new Gtk.Button({
             label: _('Search'),
