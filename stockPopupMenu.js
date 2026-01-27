@@ -259,7 +259,7 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         const box = new St.BoxLayout({
-            style: 'spacing: 8px;'
+            style_class: 'stockbar-footer-button-box'
         });
         
         const icon = new St.Icon({
@@ -320,7 +320,7 @@ class StockPopupMenu extends PanelMenu.Button {
         // Add loading indicator
         const loadingLabel = new St.Label({
             text: 'Searching...',
-            style: 'padding: 12px; color: rgba(255,255,255,0.5);'
+            style_class: 'stockbar-loading-message'
         });
         this._searchResultsBox.add_child(loadingLabel);
         
@@ -331,7 +331,7 @@ class StockPopupMenu extends PanelMenu.Button {
             if (!results || results.length === 0) {
                 const noResultsLabel = new St.Label({
                     text: 'No results found',
-                    style: 'padding: 8px 12px; color: rgba(255,255,255,0.5);'
+                    style_class: 'stockbar-status-message'
                 });
                 this._searchResultsBox.add_child(noResultsLabel);
                 
@@ -353,7 +353,7 @@ class StockPopupMenu extends PanelMenu.Button {
             
             const errorLabel = new St.Label({
                 text: 'Search unavailable',
-                style: 'padding: 8px 12px; color: rgba(255,255,255,0.5);'
+                style_class: 'stockbar-status-message'
             });
             this._searchResultsBox.add_child(errorLabel);
             
@@ -372,20 +372,20 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         const box = new St.BoxLayout({
-            style: 'spacing: 10px;'
+            style_class: 'stockbar-direct-add-box'
         });
         
         const icon = new St.Icon({
             icon_name: 'list-add-symbolic',
             icon_size: 16,
-            style: 'color: rgba(255,255,255,0.6);'
+            style_class: 'stockbar-direct-add-icon'
         });
         box.add_child(icon);
         
         const label = new St.Label({
             text: `Add "${symbol}" directly`,
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'color: rgba(255,255,255,0.8);'
+            style_class: 'stockbar-direct-add-label'
         });
         box.add_child(label);
         
@@ -406,7 +406,7 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         const box = new St.BoxLayout({
-            style: 'spacing: 10px;'
+            style_class: 'stockbar-search-result-box'
         });
         
         // Logo placeholder
@@ -534,7 +534,7 @@ class StockPopupMenu extends PanelMenu.Button {
         if (watchlist.length === 0) {
             const emptyLabel = new St.Label({
                 text: 'No stocks in watchlist.\nSearch and add stocks above.',
-                style: 'padding: 12px; color: #888; text-align: center;'
+                style_class: 'stockbar-empty-watchlist'
             });
             this._watchlistBox.add_child(emptyLabel);
             return;
@@ -575,17 +575,9 @@ class StockPopupMenu extends PanelMenu.Button {
 
     _addWatchlistItem(symbol, quote) {
         const item = new St.BoxLayout({
-            style: 'padding: 6px 12px; spacing: 8px;',
+            style_class: 'stockbar-watchlist-item',
             reactive: true,
             track_hover: true
-        });
-        
-        item.connect('enter-event', () => {
-            item.set_style('padding: 6px 12px; spacing: 8px; background-color: rgba(255,255,255,0.1);');
-        });
-        
-        item.connect('leave-event', () => {
-            item.set_style('padding: 6px 12px; spacing: 8px;');
         });
         
         // Logo
@@ -625,14 +617,16 @@ class StockPopupMenu extends PanelMenu.Button {
         
         const symbolLabel = new St.Label({
             text: displaySymbol,
-            style: `font-weight: bold; font-size: ${fontSize}px;`
+            style_class: 'stockbar-stock-symbol-label',
+            style: `font-size: ${fontSize}px;`
         });
         symbolLabel.set_name(`symbol-${symbol}`);
         infoBox.add_child(symbolLabel);
         
         const nameLabel = new St.Label({
             text: quote?.name || 'Loading...',
-            style: `font-size: ${smallFontSize}px; color: #888;`
+            style_class: 'stockbar-stock-name-label',
+            style: `font-size: ${smallFontSize}px;`
         });
         nameLabel.set_name(`name-${symbol}`);
         infoBox.add_child(nameLabel);
@@ -642,12 +636,13 @@ class StockPopupMenu extends PanelMenu.Button {
         // Price box
         const priceBox = new St.BoxLayout({
             vertical: true,
-            style: 'text-align: right;'
+            style_class: 'stockbar-stock-price-box'
         });
         
         const priceLabel = new St.Label({
             text: quote ? `$${quote.price.toFixed(2)}` : '--',
-            style: `font-weight: bold; font-size: ${fontSize}px;`
+            style_class: 'stockbar-stock-price-label',
+            style: `font-size: ${fontSize}px;`
         });
         priceLabel.set_name(`price-${symbol}`);
         priceBox.add_child(priceLabel);
@@ -659,6 +654,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         const changeLabel = new St.Label({
             text: changeText,
+            style_class: 'stockbar-stock-change-label',
             style: `font-size: ${smallFontSize}px; color: ${changeColor};`
         });
         changeLabel.set_name(`change-${symbol}`);
@@ -675,8 +671,7 @@ class StockPopupMenu extends PanelMenu.Button {
                 icon_name: isPinned ? 'view-pin-symbolic' : 'view-pin-symbolic',
                 icon_size: 14
             }),
-            style_class: 'button',
-            style: isPinned ? 'padding: 4px; background-color: rgba(76, 175, 80, 0.3);' : 'padding: 4px;'
+            style_class: isPinned ? 'stockbar-item-button-active' : 'stockbar-item-button'
         });
         pinButton.set_name(`pin-btn-${symbol}`);
         
@@ -684,7 +679,7 @@ class StockPopupMenu extends PanelMenu.Button {
             this._toggleDesktopWidget(symbol);
             const newDesktopWidgets = this._settings.get_strv('desktop-widgets');
             const isPinnedNow = newDesktopWidgets.includes(symbol);
-            pinButton.set_style(isPinnedNow ? 'padding: 4px; background-color: rgba(76, 175, 80, 0.3);' : 'padding: 4px;');
+            pinButton.style_class = isPinnedNow ? 'stockbar-item-button-active' : 'stockbar-item-button';
         });
         
         item.add_child(pinButton);
@@ -698,8 +693,7 @@ class StockPopupMenu extends PanelMenu.Button {
                 icon_name: isOnPanel ? 'view-reveal-symbolic' : 'view-conceal-symbolic',
                 icon_size: 14
             }),
-            style_class: 'button',
-            style: 'padding: 4px;'
+            style_class: 'stockbar-item-button'
         });
         panelButton.set_name(`panel-btn-${symbol}`);
         
@@ -718,8 +712,7 @@ class StockPopupMenu extends PanelMenu.Button {
                 icon_name: 'user-trash-symbolic',
                 icon_size: 14
             }),
-            style_class: 'button',
-            style: 'padding: 4px;'
+            style_class: 'stockbar-item-button'
         });
         
         removeButton.connect('clicked', () => {
@@ -781,7 +774,7 @@ class StockPopupMenu extends PanelMenu.Button {
         if (watchlist.length === 0) {
             const emptyLabel = new St.Label({
                 text: 'No stocks in watchlist.\nSearch and add stocks above.',
-                style: 'padding: 12px; color: #888; text-align: center;'
+                style_class: 'stockbar-empty-watchlist'
             });
             this._watchlistBox.add_child(emptyLabel);
             return;
@@ -860,8 +853,7 @@ class StockPanelButton extends PanelMenu.Button {
         
         // Panel button layout
         this._panelBox = new St.BoxLayout({
-            style_class: 'stockbar-panel-button',
-            style: 'spacing: 4px;'
+            style_class: 'stockbar-panel-box'
         });
         
         // Logo
@@ -878,7 +870,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._symbolLabel = new St.Label({
             text: symbol,
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'font-weight: bold; font-size: 11px;'
+            style_class: 'stockbar-panel-symbol-label'
         });
         this._panelBox.add_child(this._symbolLabel);
         
@@ -886,7 +878,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._priceLabel = new St.Label({
             text: '...',
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'font-size: 11px;'
+            style_class: 'stockbar-panel-price-label'
         });
         this._panelBox.add_child(this._priceLabel);
         
@@ -894,7 +886,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._changeLabel = new St.Label({
             text: '',
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'font-size: 10px;'
+            style_class: 'stockbar-panel-change-label'
         });
         this._panelBox.add_child(this._changeLabel);
         
@@ -957,7 +949,7 @@ class StockPanelButton extends PanelMenu.Button {
             const changeColor = quote.change >= 0 ? '#4caf50' : '#f44336';
             const changeSymbol = quote.change >= 0 ? '▲' : '▼';
             this._changeLabel.set_text(`${changeSymbol}${Math.abs(quote.changePercent).toFixed(1)}%`);
-            this._changeLabel.set_style(`color: ${changeColor}; font-size: 10px;`);
+            this._changeLabel.set_style(`color: ${changeColor};`);
             
             // Update menu header
             this._updateMenuHeader(quote);
@@ -973,12 +965,12 @@ class StockPanelButton extends PanelMenu.Button {
         
         const headerBox = new St.BoxLayout({
             vertical: true,
-            style: 'padding: 12px; min-width: 300px;'
+            style_class: 'stockbar-chart-header-box'
         });
         
         // Stock name and price row
         this._menuHeader = new St.BoxLayout({
-            style: 'spacing: 12px;'
+            style_class: 'stockbar-chart-menu-header'
         });
         
         this._menuLogo = new St.Icon({
@@ -994,13 +986,13 @@ class StockPanelButton extends PanelMenu.Button {
         
         this._menuSymbol = new St.Label({
             text: this._symbol,
-            style: 'font-weight: bold; font-size: 16px;'
+            style_class: 'stockbar-chart-menu-symbol'
         });
         infoBox.add_child(this._menuSymbol);
         
         this._menuName = new St.Label({
             text: 'Loading...',
-            style: 'font-size: 12px; color: #888;'
+            style_class: 'stockbar-chart-menu-name'
         });
         infoBox.add_child(this._menuName);
         
@@ -1008,18 +1000,18 @@ class StockPanelButton extends PanelMenu.Button {
         
         const priceBox = new St.BoxLayout({
             vertical: true,
-            style: 'text-align: right;'
+            style_class: 'stockbar-stock-price-box'
         });
         
         this._menuPrice = new St.Label({
             text: '--',
-            style: 'font-weight: bold; font-size: 18px;'
+            style_class: 'stockbar-chart-menu-price'
         });
         priceBox.add_child(this._menuPrice);
         
         this._menuChange = new St.Label({
             text: '--',
-            style: 'font-size: 12px;'
+            style_class: 'stockbar-chart-menu-change'
         });
         priceBox.add_child(this._menuChange);
         
@@ -1042,12 +1034,12 @@ class StockPanelButton extends PanelMenu.Button {
         
         const chartBox = new St.BoxLayout({
             vertical: true,
-            style: 'padding: 8px;'
+            style_class: 'stockbar-chart-box'
         });
         
         // Time range buttons
         const rangeBox = new St.BoxLayout({
-            style: 'spacing: 4px; margin-bottom: 8px;'
+            style_class: 'stockbar-chart-range-box'
         });
         
         const ranges = [
@@ -1063,8 +1055,7 @@ class StockPanelButton extends PanelMenu.Button {
         for (const r of ranges) {
             const btn = new St.Button({
                 label: r.label,
-                style_class: 'stockbar-range-button',
-                style: 'padding: 4px 8px; border-radius: 4px; font-size: 10px;'
+                style_class: 'stockbar-range-button'
             });
             btn._range = r.range;
             btn._interval = r.interval;
@@ -1081,14 +1072,14 @@ class StockPanelButton extends PanelMenu.Button {
         // Chart display area - using DrawingArea for nice graphics
         this._chartContainer = new St.BoxLayout({
             vertical: true,
-            style: 'padding: 8px; background-color: rgba(0,0,0,0.3); border-radius: 8px; min-width: 300px;'
+            style_class: 'stockbar-chart-container'
         });
         
         // Chart canvas
         this._chartCanvas = new St.DrawingArea({
             width: 300,
             height: 120,
-            style: 'margin-bottom: 4px;'
+            style_class: 'stockbar-chart-canvas'
         });
         this._chartCanvas.connect('repaint', (area) => this._drawChart(area));
         this._chartContainer.add_child(this._chartCanvas);
@@ -1096,7 +1087,7 @@ class StockPanelButton extends PanelMenu.Button {
         // Chart info label (for change info)
         this._chartInfoLabel = new St.Label({
             text: 'Click a time range to load chart',
-            style: 'font-size: 11px; color: #aaa; text-align: center;'
+            style_class: 'stockbar-chart-info'
         });
         this._chartContainer.add_child(this._chartInfoLabel);
         
@@ -1104,24 +1095,24 @@ class StockPanelButton extends PanelMenu.Button {
         
         // Stats row
         this._statsBox = new St.BoxLayout({
-            style: 'spacing: 16px; margin-top: 8px;'
+            style_class: 'stockbar-chart-stats-box'
         });
         
         this._highLabel = new St.Label({
             text: 'H: --',
-            style: 'font-size: 10px; color: #4caf50;'
+            style_class: 'stockbar-stat-high'
         });
         this._statsBox.add_child(this._highLabel);
         
         this._lowLabel = new St.Label({
             text: 'L: --',
-            style: 'font-size: 10px; color: #f44336;'
+            style_class: 'stockbar-stat-low'
         });
         this._statsBox.add_child(this._lowLabel);
         
         this._volumeLabel = new St.Label({
             text: 'Vol: --',
-            style: 'font-size: 10px; color: #888;'
+            style_class: 'stockbar-stat-volume'
         });
         this._statsBox.add_child(this._volumeLabel);
         
@@ -1157,9 +1148,9 @@ class StockPanelButton extends PanelMenu.Button {
     _highlightRangeButton(activeBtn) {
         for (const btn of this._rangeButtons) {
             if (btn === activeBtn) {
-                btn.set_style('padding: 4px 8px; border-radius: 4px; font-size: 10px; background-color: rgba(255,255,255,0.2);');
+                btn.style_class = 'stockbar-range-button-active';
             } else {
-                btn.set_style('padding: 4px 8px; border-radius: 4px; font-size: 10px;');
+                btn.style_class = 'stockbar-range-button';
             }
         }
     }
@@ -1181,7 +1172,7 @@ class StockPanelButton extends PanelMenu.Button {
         const changeColor = quote.change >= 0 ? '#4caf50' : '#f44336';
         const changeSign = quote.change >= 0 ? '+' : '';
         this._menuChange.set_text(`${changeSign}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)`);
-        this._menuChange.set_style(`font-size: 12px; color: ${changeColor};`);
+        this._menuChange.set_style(`color: ${changeColor};`);
         
         // Load menu logo
         const logoUrl = SharedData.api?.getLogoUrl(this._symbol, quote.name);
@@ -1232,7 +1223,8 @@ class StockPanelButton extends PanelMenu.Button {
         const changeColor = priceChange >= 0 ? '#4caf50' : '#f44336';
         const changeSign = priceChange >= 0 ? '+' : '';
         this._chartInfoLabel.set_text(`Change: ${changeSign}$${priceChange.toFixed(2)} (${changeSign}${priceChangePercent.toFixed(2)}%)`);
-        this._chartInfoLabel.set_style(`font-size: 11px; color: ${changeColor}; text-align: center; font-weight: bold;`);
+        this._chartInfoLabel.style_class = 'stockbar-chart-info-active';
+        this._chartInfoLabel.set_style(`color: ${changeColor};`);
         
         // Trigger repaint
         this._chartCanvas.queue_repaint();

@@ -418,3 +418,270 @@
     height: 1px;
     margin: 4px 12px;
 }
+
+/* ============================================
+   FOOTER BUTTON BOX
+   ============================================ */
+
+.stockbar-footer-button-box {
+    spacing: 8px;
+}
+
+/* ============================================
+   LOADING / STATUS MESSAGES
+   ============================================ */
+
+.stockbar-loading-message {
+    padding: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stockbar-status-message {
+    padding: 8px 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stockbar-empty-watchlist {
+    padding: 12px;
+    color: #888888;
+    text-align: center;
+}
+
+/* ============================================
+   DIRECT ADD BUTTON
+   ============================================ */
+
+.stockbar-direct-add-box {
+    spacing: 10px;
+}
+
+.stockbar-direct-add-icon {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.stockbar-direct-add-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   SEARCH RESULT ITEM
+   ============================================ */
+
+.stockbar-search-result-box {
+    spacing: 10px;
+}
+
+/* ============================================
+   WATCHLIST ITEM
+   ============================================ */
+
+.stockbar-watchlist-item {
+    padding: 6px 12px;
+    spacing: 8px;
+}
+
+.stockbar-watchlist-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-stock-info-box {
+    /* vertical container for symbol/name */
+}
+
+.stockbar-stock-price-box {
+    text-align: right;
+}
+
+/* Stock labels - font-size is set dynamically based on user settings */
+.stockbar-stock-symbol-label {
+    font-weight: bold;
+}
+
+.stockbar-stock-name-label {
+    color: #888888;
+}
+
+.stockbar-stock-price-label {
+    font-weight: bold;
+}
+
+/* Change label color is dynamic based on positive/negative */
+.stockbar-stock-change-label {
+    /* color set dynamically */
+}
+
+.stockbar-item-button {
+    padding: 4px;
+}
+
+.stockbar-item-button-active {
+    padding: 4px;
+    background-color: rgba(76, 175, 80, 0.3);
+}
+
+.stockbar-stock-name-muted {
+    color: #888888;
+}
+
+/* ============================================
+   PANEL BUTTON STYLES
+   ============================================ */
+
+.stockbar-panel-box {
+    spacing: 4px;
+}
+
+.stockbar-panel-symbol-label {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.stockbar-panel-price-label {
+    font-size: 11px;
+}
+
+.stockbar-panel-change-label {
+    font-size: 10px;
+}
+
+/* ============================================
+   CHART POPUP MENU
+   ============================================ */
+
+.stockbar-chart-header-box {
+    padding: 12px;
+    min-width: 300px;
+}
+
+.stockbar-chart-menu-header {
+    spacing: 12px;
+}
+
+.stockbar-chart-menu-symbol {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.stockbar-chart-menu-name {
+    font-size: 12px;
+    color: #888888;
+}
+
+.stockbar-chart-menu-price {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.stockbar-chart-menu-change {
+    font-size: 12px;
+}
+
+.stockbar-chart-box {
+    padding: 8px;
+}
+
+.stockbar-chart-range-box {
+    spacing: 4px;
+    margin-bottom: 8px;
+}
+
+.stockbar-range-button {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+.stockbar-range-button-active {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.stockbar-chart-container {
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    min-width: 300px;
+}
+
+.stockbar-chart-canvas {
+    margin-bottom: 4px;
+}
+
+.stockbar-chart-info {
+    font-size: 11px;
+    color: #aaaaaa;
+    text-align: center;
+}
+
+.stockbar-chart-info-active {
+    font-size: 11px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.stockbar-chart-stats-box {
+    spacing: 16px;
+    margin-top: 8px;
+}
+
+.stockbar-stat-high {
+    font-size: 10px;
+    color: #4caf50;
+}
+
+.stockbar-stat-low {
+    font-size: 10px;
+    color: #f44336;
+}
+
+.stockbar-stat-volume {
+    font-size: 10px;
+    color: #888888;
+}
+
+/* ============================================
+   DESKTOP WIDGET STYLES
+   ============================================ */
+
+/* Base widget container - note: main style is set dynamically due to scale/opacity */
+.stockbar-desktop-widget {
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.stockbar-widget-chart-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+.stockbar-widget-name {
+    color: #888888;
+}
+
+.stockbar-widget-range-button {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stockbar-widget-range-button-active {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.stockbar-widget-chart-info {
+    color: #888888;
+}
+
+.stockbar-widget-stat-high {
+    color: #4caf50;
+}
+
+.stockbar-widget-stat-low {
+    color: #f44336;
+}
+
+.stockbar-widget-stat-volume {
+    color: #888888;
+}
