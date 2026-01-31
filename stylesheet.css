@@ -34,61 +34,11 @@
     font-size: 13px;
     background-color: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-}
 
-.stockbar-search-entry:focus {
-    background-color: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(100, 150, 255, 0.5);
-}
-
-.stockbar-search-entry:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* ============================================
-   SECTION HEADERS
-   ============================================ */
-
-.stockbar-section-header {
-    font-size: 11px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.5);
-    padding: 8px 12px 6px 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* ============================================
-   WATCHLIST CONTAINER
-   ============================================ */
-
-.stockbar-watchlist-scroll {
-    max-height: 320px;
-    min-height: 100px;
-}
-
-.stockbar-watchlist-container {
-    padding: 4px 0;
-}
-
-/* ============================================
-   STOCK ITEMS (Watchlist & Search Results)
-   ============================================ */
-
-.stockbar-stock-item {
-    padding: 10px 12px;
-    margin: 2px 4px;
-    border-radius: 10px;
-    background-color: transparent;
-    transition-duration: 150ms;
-}
-
-.stockbar-stock-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-.stockbar-stock-item:active {
+    .stockbar-fx-size-32 {
+        width: 32px;
+        height: 32px;
+    }
     background-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -693,6 +643,56 @@
 
 .stockbar-widget-stat-volume {
     color: #888888;
+}
+
+.stockbar-fx-label {
+    padding: 0;
+    margin: 0;
+    border-radius: 8px;
+    background-color: rgba(100, 150, 255, 0.18);
+    border: 1px solid rgba(100, 150, 255, 0.35);
+}
+
+.stockbar-fx-label-text {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.stockbar-fx-size-20 {
+    width: 20px;
+    height: 20px;
+}
+
+.stockbar-fx-size-22 {
+    width: 22px;
+    height: 22px;
+}
+
+.stockbar-fx-size-24 {
+    width: 24px;
+    height: 24px;
+}
+
+.stockbar-fx-size-26 {
+    width: 26px;
+    height: 26px;
+}
+
+.stockbar-fx-size-28 {
+    width: 28px;
+    height: 28px;
+}
+
+.stockbar-fx-size-30 {
+    width: 30px;
+    height: 30px;
+}
+
+.stockbar-fx-size-32 {
+    width: 32px;
+    height: 32px;
 }
 
 .stockbar-widget-move-mode {

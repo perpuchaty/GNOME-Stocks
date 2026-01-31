@@ -37,6 +37,12 @@ function getWidgetOpacityClass(opacity) {
     return `stockbar-widget-opacity-${clamped}`;
 }
 
+function getFxSizeClass(size) {
+    const scaled = Math.round((size * 1.5) / 2) * 2;
+    const value = Math.max(20, Math.min(32, scaled));
+    return `stockbar-fx-size-${value}`;
+}
+
 function formatPrice(value, useSeparators) {
     if (value === null || value === undefined || Number.isNaN(value)) {
         return '--';
@@ -88,6 +94,57 @@ function formatCurrency(value, currency, useSeparators) {
         return `${formatted} ${symbol}`;
     }
     return `${symbol}${formatted}`;
+}
+
+function isFxSymbol(symbol, data) {
+    const upperSymbol = (symbol || '').toUpperCase();
+    if (upperSymbol.endsWith('=X')) {
+        return true;
+    }
+    if (data?.type === 'FX' || data?.exchange === 'FX') {
+        return true;
+    }
+    return false;
+}
+
+function getFxBaseCurrency(symbol, data) {
+    const upperSymbol = (symbol || '').toUpperCase();
+    if (upperSymbol.endsWith('=X')) {
+        const pair = upperSymbol.replace('=X', '');
+        if (pair.length >= 3) {
+            return pair.slice(0, 3);
+        }
+    }
+    const display = (data?.displaySymbol || data?.symbol || '').toUpperCase();
+    if (display.includes('/')) {
+        return display.split('/')[0];
+    }
+    return upperSymbol.slice(0, 3);
+}
+
+function getFxLabelText(symbol, data) {
+    const base = getFxBaseCurrency(symbol, data);
+    const symbolText = getCurrencySymbol(base);
+    if (symbolText && (symbolText.length === 1 || symbolText.endsWith('$'))) {
+        return symbolText;
+    }
+    return base || 'FX';
+}
+
+function createFxLabel(symbol, data, size) {
+    const text = new St.Label({
+        text: getFxLabelText(symbol, data),
+        style_class: `stockbar-fx-label-text ${getFontSizeClass(Math.round(size * 0.8))}`
+    });
+
+    const container = new St.Bin({
+        style_class: `stockbar-fx-label ${getFxSizeClass(size)}`,
+        x_align: Clutter.ActorAlign.CENTER,
+        y_align: Clutter.ActorAlign.CENTER
+    });
+
+    container.set_child(text);
+    return container;
 }
 
 function getCustomNamesMap(settings) {
@@ -527,19 +584,22 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         // Logo placeholder
-        const logoIcon = new St.Icon({
-            icon_name: 'view-grid-symbolic',
-            icon_size: ICON_SIZE,
-            style_class: 'stockbar-stock-logo'
-        });
-        box.add_child(logoIcon);
+        const logoActor = isFxSymbol(stock.symbol, stock)
+            ? createFxLabel(stock.symbol, stock, ICON_SIZE)
+            : new St.Icon({
+                icon_name: 'view-grid-symbolic',
+                icon_size: ICON_SIZE,
+                style_class: 'stockbar-stock-logo',
+                y_align: Clutter.ActorAlign.CENTER
+            });
+        box.add_child(logoActor);
         
         // Load actual logo
         const logoUrl = this._api.getLogoUrl(stock.symbol, stock.name);
-        if (logoUrl) {
+        if (!isFxSymbol(stock.symbol, stock) && logoUrl) {
             this._logoCache.loadLogo(stock.symbol, logoUrl, (gicon) => {
-                if (gicon && logoIcon) {
-                    logoIcon.set_gicon(gicon);
+                if (gicon && logoActor instanceof St.Icon) {
+                    logoActor.set_gicon(gicon);
                 }
             });
         }
@@ -712,18 +772,21 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         // Logo
-        const logoIcon = new St.Icon({
-            icon_name: 'view-grid-symbolic',
-            icon_size: ICON_SIZE
-        });
-        item.add_child(logoIcon);
+        const logoActor = isFxSymbol(symbol, quote)
+            ? createFxLabel(symbol, quote, ICON_SIZE)
+            : new St.Icon({
+                icon_name: 'view-grid-symbolic',
+                icon_size: ICON_SIZE,
+                y_align: Clutter.ActorAlign.CENTER
+            });
+        item.add_child(logoActor);
         
         // Load logo
         const logoUrl = this._api.getLogoUrl(symbol, quote?.name);
-        if (logoUrl) {
+        if (!isFxSymbol(symbol, quote) && logoUrl) {
             this._logoCache.loadLogo(symbol, logoUrl, (gicon) => {
-                if (gicon && logoIcon) {
-                    logoIcon.set_gicon(gicon);
+                if (gicon && logoActor instanceof St.Icon) {
+                    logoActor.set_gicon(gicon);
                 }
             });
         }
@@ -1005,10 +1068,12 @@ class StockPanelButton extends PanelMenu.Button {
         });
         
         // Logo
-        this._logoIcon = new St.Icon({
-            icon_name: 'view-grid-symbolic',
-            icon_size: PANEL_ICON_SIZE
-        });
+        this._logoIcon = isFxSymbol(this._symbol, null)
+            ? createFxLabel(this._symbol, null, PANEL_ICON_SIZE)
+            : new St.Icon({
+                icon_name: 'view-grid-symbolic',
+                icon_size: PANEL_ICON_SIZE
+            });
         this._panelBox.add_child(this._logoIcon);
         
         // Load logo
@@ -1068,10 +1133,20 @@ class StockPanelButton extends PanelMenu.Button {
     
     _loadLogo() {
         const quote = SharedData.getQuote(this._symbol);
+        if (isFxSymbol(this._symbol, quote)) {
+            if (!(this._logoIcon instanceof St.Label)) {
+                this._panelBox.remove_child(this._logoIcon);
+                this._logoIcon = createFxLabel(this._symbol, quote, PANEL_ICON_SIZE);
+                this._panelBox.insert_child_at_index(this._logoIcon, 0);
+            } else {
+                this._logoIcon.set_text(getFxLabelText(this._symbol, quote));
+            }
+            return;
+        }
         const logoUrl = SharedData.api?.getLogoUrl(this._symbol, quote?.name);
         if (logoUrl && SharedData.logoCache) {
             SharedData.logoCache.loadLogo(this._symbol, logoUrl, (gicon) => {
-                if (gicon && this._logoIcon && !this._logoIcon.is_finalized?.()) {
+                if (gicon && this._logoIcon instanceof St.Icon && !this._logoIcon.is_finalized?.()) {
                     this._logoIcon.set_gicon(gicon);
                 }
             });
@@ -1323,6 +1398,16 @@ class StockPanelButton extends PanelMenu.Button {
         this._menuChange.style_class = `stockbar-chart-menu-change ${changeClass}`;
         
         // Load menu logo
+        if (isFxSymbol(this._symbol, quote)) {
+            if (!(this._menuLogo instanceof St.Label)) {
+                this._menuHeader.remove_child(this._menuLogo);
+                this._menuLogo = createFxLabel(this._symbol, quote, 16);
+                this._menuHeader.insert_child_at_index(this._menuLogo, 0);
+            } else {
+                this._menuLogo.set_text(getFxLabelText(this._symbol, quote));
+            }
+            return;
+        }
         const logoUrl = SharedData.api?.getLogoUrl(this._symbol, quote.name);
         if (logoUrl && SharedData.logoCache) {
             SharedData.logoCache.loadLogo(this._symbol, logoUrl, (gicon) => {
@@ -1691,20 +1776,24 @@ class DesktopStockWidget extends St.BoxLayout {
         });
         
         // Logo
-        this._logoIcon = new St.Icon({
-            icon_name: 'view-grid-symbolic',
-            icon_size: Math.round(28 * scale)
-        });
+        this._logoIcon = isFxSymbol(this._symbol, quote)
+            ? createFxLabel(this._symbol, quote, Math.round(14 * scale))
+            : new St.Icon({
+                icon_name: 'view-grid-symbolic',
+                icon_size: Math.round(28 * scale)
+            });
         header.add_child(this._logoIcon);
         
         // Load logo
-        const logoUrl = this._api?.getLogoUrl(this._symbol, quote?.name);
-        if (logoUrl && this._logoCache) {
-            this._logoCache.loadLogo(this._symbol, logoUrl, (gicon) => {
-                if (gicon && this._logoIcon) {
-                    this._logoIcon.set_gicon(gicon);
-                }
-            });
+        if (!isFxSymbol(this._symbol, quote)) {
+            const logoUrl = this._api?.getLogoUrl(this._symbol, quote?.name);
+            if (logoUrl && this._logoCache) {
+                this._logoCache.loadLogo(this._symbol, logoUrl, (gicon) => {
+                    if (gicon && this._logoIcon instanceof St.Icon) {
+                        this._logoIcon.set_gicon(gicon);
+                    }
+                });
+            }
         }
         
         // Info
