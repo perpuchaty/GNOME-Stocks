@@ -1185,6 +1185,10 @@ class StockPanelButton extends PanelMenu.Button {
             
             // Load logo if not loaded
             this._loadLogo();
+
+            if (this.menu?.isOpen && this._chartData && !this._loadingChart) {
+                this._loadChart(this._currentRange, this._currentInterval);
+            }
         }
     }
     

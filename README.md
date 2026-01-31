@@ -45,6 +45,11 @@ The extension may be available on [extensions.gnome.org](https://extensions.gnom
 2. Type a stock symbol or company name in the search box
 3. Click the **star icon** (⭐) to add to watchlist
 
+### Find FX (Forex) Pairs
+- Search using Yahoo Finance FX symbols like `USDPLN=X` or `PLNUSD=X`
+- You can also search by pair name (e.g. `USD/PLN`) and add it to the watchlist
+- FX items show currency-style icons in the list and panel
+
 ### Manage Watchlist
 - Click the **eye icon** (👁) next to a stock to show/hide it in the panel bar
 - Click the **pin icon** (📌) to add/remove desktop widget
@@ -89,6 +94,11 @@ gnome-extensions prefs gnome-stocks@perpuchaty.github.com
 
 **Updates**
 - **Refresh Interval**: How often to update prices (default: 60 seconds, minimum: 30 seconds)
+
+**Custom Stock Names**
+- Open **Preferences** → **Custom Stock Names**
+- Each watchlist item has a text field where you can override its display name
+- Leave the field empty to revert to the original company name
 
 ## Data Source
 
