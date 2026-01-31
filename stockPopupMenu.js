@@ -453,6 +453,16 @@ class StockPopupMenu extends PanelMenu.Button {
             for (const stock of results.slice(0, 8)) {
                 this._addSearchResultItem(stock);
             }
+
+            const directSymbol = query.toUpperCase();
+            const hasExactMatch = results.some(stock =>
+                stock.symbol?.toUpperCase() === directSymbol ||
+                stock.displaySymbol?.toUpperCase() === directSymbol
+            );
+            if (!hasExactMatch && query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
+                const directAddBtn = this._createDirectAddButton(directSymbol);
+                this._searchResultsBox.add_child(directAddBtn);
+            }
         } catch (e) {
             this._clearSearchResults();
             this._searchSeparator.visible = true;

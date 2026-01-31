@@ -17,8 +17,18 @@ export class StockAPI {
         this._session.timeout = 10;
     }
 
+    _normalizeFxPair(query) {
+        if (!query) return null;
+        const cleaned = query.toUpperCase().replace(/[^A-Z]/g, '');
+        if (cleaned.length !== 6) return null;
+        const base = cleaned.slice(0, 3);
+        const quote = cleaned.slice(3, 6);
+        return { base, quote, symbol: `${base}${quote}=X` };
+    }
+
     async searchStocks(query) {
         return new Promise((resolve, reject) => {
+            const fxPair = this._normalizeFxPair(query);
             const url = `${SEARCH_URL}?q=${encodeURIComponent(query)}&quotesCount=10&newsCount=0`;
             const message = Soup.Message.new('GET', url);
             
@@ -80,9 +90,34 @@ export class StockAPI {
                                     isCrypto: isCrypto
                                 };
                             });
+                        if (fxPair) {
+                            const fxSymbol = fxPair.symbol;
+                            const hasFx = stocks.some(s => s.symbol?.toUpperCase() === fxSymbol);
+                            if (!hasFx) {
+                                stocks.unshift({
+                                    symbol: fxSymbol,
+                                    displaySymbol: `${fxPair.base}/${fxPair.quote}`,
+                                    name: `${fxPair.base}/${fxPair.quote} FX`,
+                                    exchange: 'FX',
+                                    type: 'FX',
+                                    isCrypto: false
+                                });
+                            }
+                        }
                         resolve(stocks);
                     } else {
-                        resolve([]);
+                        if (fxPair) {
+                            resolve([{
+                                symbol: fxPair.symbol,
+                                displaySymbol: `${fxPair.base}/${fxPair.quote}`,
+                                name: `${fxPair.base}/${fxPair.quote} FX`,
+                                exchange: 'FX',
+                                type: 'FX',
+                                isCrypto: false
+                            }]);
+                        } else {
+                            resolve([]);
+                        }
                     }
                 } catch (e) {
                     console.debug(`GNOME Stocks: Search error: ${e.message}`);

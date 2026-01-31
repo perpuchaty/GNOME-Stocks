@@ -583,6 +583,30 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
                 searchResultsGroup.add(row);
                 searchResultRows.push(row);
             }
+
+            const directSymbol = query.toUpperCase();
+            const hasExactMatch = results.some(stock =>
+                (stock.symbol || '').toUpperCase() === directSymbol ||
+                (stock.displaySymbol || '').toUpperCase() === directSymbol
+            );
+            if (!hasExactMatch && query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
+                const directRow = new Adw.ActionRow({
+                    title: _('Add “%s”').format(directSymbol),
+                    subtitle: _('Add this symbol directly'),
+                });
+                const addButton = new Gtk.Button({
+                    label: _('Add'),
+                    valign: Gtk.Align.CENTER,
+                    css_classes: ['suggested-action'],
+                });
+                addButton.connect('clicked', () => {
+                    addToWatchlist(directSymbol);
+                });
+                directRow.add_suffix(addButton);
+                directRow.activatable_widget = addButton;
+                searchResultsGroup.add(directRow);
+                searchResultRows.push(directRow);
+            }
         };
 
         const renderWatchlist = () => {
