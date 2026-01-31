@@ -37,9 +37,11 @@ function getWidgetOpacityClass(opacity) {
     return `stockbar-widget-opacity-${clamped}`;
 }
 
-function getFxSizeClass(size) {
-    const scaled = Math.round((size * 1.5) / 2) * 2;
-    const value = Math.max(20, Math.min(32, scaled));
+function getFxSizeClass(size, isWide) {
+    const multiplier = isWide ? 2.0 : 1.5;
+    const scaled = Math.round((size * multiplier) / 2) * 2;
+    const maxSize = isWide ? 40 : 32;
+    const value = Math.max(20, Math.min(maxSize, scaled));
     return `stockbar-fx-size-${value}`;
 }
 
@@ -132,13 +134,17 @@ function getFxLabelText(symbol, data) {
 }
 
 function createFxLabel(symbol, data, size) {
+    const labelText = getFxLabelText(symbol, data);
+    const isWide = labelText.length > 1;
     const text = new St.Label({
-        text: getFxLabelText(symbol, data),
-        style_class: `stockbar-fx-label-text ${getFontSizeClass(Math.round(size * 0.8))}`
+        text: labelText,
+        style_class: `stockbar-fx-label-text ${getFontSizeClass(Math.round(size * (isWide ? 0.7 : 0.8)))}`
     });
+    text.set_x_align(Clutter.ActorAlign.CENTER);
+    text.set_y_align(Clutter.ActorAlign.CENTER);
 
     const container = new St.Bin({
-        style_class: `stockbar-fx-label ${getFxSizeClass(size)}`,
+        style_class: `stockbar-fx-label ${getFxSizeClass(size, isWide)}${isWide ? ' stockbar-fx-label-wide' : ''}`,
         x_align: Clutter.ActorAlign.CENTER,
         y_align: Clutter.ActorAlign.CENTER
     });
