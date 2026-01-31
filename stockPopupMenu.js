@@ -178,7 +178,10 @@ class StockPopupMenu extends PanelMenu.Button {
             x_expand: true
         });
 
-        this._searchEntry.set_secondary_icon_name('edit-clear-symbolic');
+        this._searchClearIcon = new St.Icon({
+            icon_name: 'edit-clear-symbolic',
+            style_class: 'stockbar-search-clear-icon'
+        });
         this._searchEntry.set_secondary_icon(null);
         this._searchEntry.connect('secondary-icon-clicked', () => {
             this._searchEntry.set_text('');
@@ -339,7 +342,7 @@ class StockPopupMenu extends PanelMenu.Button {
         const text = this._searchEntry.get_text().trim();
 
         if (text.length > 0) {
-            this._searchEntry.set_secondary_icon_name('edit-clear-symbolic');
+            this._searchEntry.set_secondary_icon(this._searchClearIcon);
         } else {
             this._searchEntry.set_secondary_icon(null);
         }
@@ -550,6 +553,15 @@ class StockPopupMenu extends PanelMenu.Button {
             watchlist.push(symbol);
         } else {
             watchlist.splice(index, 1);
+            try {
+                const customNames = JSON.parse(this._settings.get_string('custom-stock-names') || '{}');
+                if (customNames[symbol]) {
+                    delete customNames[symbol];
+                    this._settings.set_string('custom-stock-names', JSON.stringify(customNames));
+                }
+            } catch (e) {
+                console.debug(`GNOME Stocks: Error updating custom names: ${e.message}`);
+            }
             // Also remove from panel stocks if present
             const panelStocks = this._settings.get_strv('panel-stocks');
             const panelIndex = panelStocks.indexOf(symbol);

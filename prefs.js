@@ -293,27 +293,40 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         });
         page.add(customNamesGroup);
 
-        const rebuildCustomNames = async () => {
-            let child = customNamesGroup.get_first_child();
-            while (child) {
-                const next = child.get_next_sibling();
-                customNamesGroup.remove(child);
-                child = next;
+        let customNamesRequestId = 0;
+        const customNameRows = [];
+
+        const clearCustomNameRows = () => {
+            for (const row of customNameRows) {
+                customNamesGroup.remove(row);
             }
+            customNameRows.length = 0;
+        };
+
+        const rebuildCustomNames = async () => {
+            const requestId = ++customNamesRequestId;
+            clearCustomNameRows();
 
             const watchlist = settings.get_strv('watchlist');
             if (watchlist.length === 0) {
+                settings.set_string('custom-stock-names', '{}');
                 const emptyRow = new Adw.ActionRow({
                     title: _('No watchlist items yet'),
                     subtitle: _('Add stocks to the watchlist to customize their names.'),
                 });
                 customNamesGroup.add(emptyRow);
+                customNameRows.push(emptyRow);
                 return;
             }
 
+            const uniqueWatchlist = [...new Set(watchlist)];
+
             const nameMap = {};
             try {
-                const quotes = await api.getMultipleQuotes(watchlist);
+                const quotes = await api.getMultipleQuotes(uniqueWatchlist);
+                if (requestId !== customNamesRequestId) {
+                    return;
+                }
                 for (const quote of quotes) {
                     if (!quote.error) {
                         nameMap[quote.symbol] = quote.name || quote.displaySymbol || quote.symbol;
@@ -323,6 +336,24 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
                 console.debug(`GNOME Stocks: Error loading names for prefs: ${e.message}`);
             }
 
+            if (requestId !== customNamesRequestId) {
+                return;
+            }
+
+            const currentWatchlist = settings.get_strv('watchlist');
+            if (currentWatchlist.length === 0) {
+                settings.set_string('custom-stock-names', '{}');
+                const emptyRow = new Adw.ActionRow({
+                    title: _('No watchlist items yet'),
+                    subtitle: _('Add stocks to the watchlist to customize their names.'),
+                });
+                customNamesGroup.add(emptyRow);
+                customNameRows.push(emptyRow);
+                return;
+            }
+
+            const renderList = [...new Set(currentWatchlist)];
+
             let customNames = {};
             try {
                 customNames = JSON.parse(settings.get_string('custom-stock-names') || '{}');
@@ -330,7 +361,18 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
                 customNames = {};
             }
 
+            const trimmedNames = {};
             for (const symbol of watchlist) {
+                if (customNames[symbol]) {
+                    trimmedNames[symbol] = customNames[symbol];
+                }
+            }
+            if (JSON.stringify(trimmedNames) !== JSON.stringify(customNames)) {
+                settings.set_string('custom-stock-names', JSON.stringify(trimmedNames));
+                customNames = trimmedNames;
+            }
+
+            for (const symbol of renderList) {
                 const companyName = nameMap[symbol] || symbol;
                 const title = companyName === symbol ? symbol : `${symbol} - ${companyName}`;
                 const entryRow = new Adw.EntryRow({
@@ -357,6 +399,7 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
                 });
 
                 customNamesGroup.add(entryRow);
+                customNameRows.push(entryRow);
             }
         };
 
