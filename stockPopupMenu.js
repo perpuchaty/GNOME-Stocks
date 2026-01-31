@@ -37,6 +37,59 @@ function getWidgetOpacityClass(opacity) {
     return `stockbar-widget-opacity-${clamped}`;
 }
 
+function formatPrice(value, useSeparators) {
+    if (value === null || value === undefined || Number.isNaN(value)) {
+        return '--';
+    }
+    const fixed = Number(value).toFixed(2);
+    if (!useSeparators) {
+        return fixed;
+    }
+    const [whole, fraction] = fixed.split('.');
+    const withCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `${withCommas}.${fraction}`;
+}
+
+function getCurrencySymbol(currency) {
+    const map = {
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        JPY: '¥',
+        CHF: 'CHF',
+        CAD: 'C$',
+        AUD: 'A$',
+        NZD: 'NZ$',
+        SEK: 'SEK',
+        NOK: 'NOK',
+        DKK: 'DKK',
+        PLN: 'zł',
+        CZK: 'Kč',
+        HUF: 'Ft',
+        TRY: '₺',
+        MXN: 'MX$',
+        BRL: 'R$',
+        ZAR: 'R',
+        INR: '₹',
+        CNY: '¥',
+        HKD: 'HK$',
+        SGD: 'S$',
+    };
+    return map[currency] || currency || '$';
+}
+
+function formatCurrency(value, currency, useSeparators) {
+    const symbol = getCurrencySymbol(currency);
+    const formatted = formatPrice(value, useSeparators);
+    if (formatted === '--') {
+        return formatted;
+    }
+    if (symbol.length > 1 && !symbol.endsWith('$')) {
+        return `${formatted} ${symbol}`;
+    }
+    return `${symbol}${formatted}`;
+}
+
 function getCustomNamesMap(settings) {
     try {
         return JSON.parse(settings.get_string('custom-stock-names') || '{}');
@@ -148,6 +201,8 @@ class StockPopupMenu extends PanelMenu.Button {
             'changed', (settings, key) => {
                 if (key === 'watchlist' || key === 'panel-stocks' || key === 'custom-stock-names' || key === 'watchlist-label-order' || key === 'watchlist-show-secondary-label') {
                     this._loadWatchlist();
+                } else if (key === 'format-large-prices') {
+                    this._updateWatchlistUI();
                 }
             },
             this
@@ -720,7 +775,7 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         const priceLabel = new St.Label({
-            text: quote ? `$${quote.price.toFixed(2)}` : '--',
+            text: quote ? formatCurrency(quote.price, quote.currency, this._settings.get_boolean('format-large-prices')) : '--',
             style_class: `stockbar-stock-price-label ${getFontSizeClass(fontSize)}`
         });
         priceLabel.set_name(`price-${symbol}`);
@@ -927,6 +982,8 @@ class StockPanelButton extends PanelMenu.Button {
             'changed', (settings, key) => {
                 if (key.startsWith('show-stock-')) {
                     this._updatePanelVisibility();
+                } else if (key === 'format-large-prices') {
+                    this._updateDisplay();
                 }
             },
             this
@@ -1024,7 +1081,7 @@ class StockPanelButton extends PanelMenu.Button {
             this._symbolLabel.set_text(cleanSymbol);
             
             // Update price
-            this._priceLabel.set_text(`$${quote.price.toFixed(2)}`);
+            this._priceLabel.set_text(formatCurrency(quote.price, quote.currency, this._settings.get_boolean('format-large-prices')));
             
             // Update change
             const changeSymbol = quote.change >= 0 ? '▲' : '▼';
@@ -1248,7 +1305,7 @@ class StockPanelButton extends PanelMenu.Button {
         
         this._menuSymbol.set_text(displaySymbol);
         this._menuName.set_text(quote.name || this._symbol);
-        this._menuPrice.set_text(`$${quote.price.toFixed(2)}`);
+        this._menuPrice.set_text(formatCurrency(quote.price, quote.currency, this._settings.get_boolean('format-large-prices')));
         
         const changeSign = quote.change >= 0 ? '+' : '';
         this._menuChange.set_text(`${changeSign}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)`);
@@ -1603,6 +1660,8 @@ class DesktopStockWidget extends St.BoxLayout {
                     }
                 } else if (key === 'custom-stock-names' || key === 'watchlist-label-order') {
                     this._updateData();
+                } else if (key === 'format-large-prices') {
+                    this._updateData();
                 }
             },
             this
@@ -1676,7 +1735,7 @@ class DesktopStockWidget extends St.BoxLayout {
         });
         
         this._priceLabel = new St.Label({
-            text: quote ? `$${quote.price.toFixed(2)}` : '--',
+            text: quote ? formatCurrency(quote.price, quote.currency, this._settings.get_boolean('format-large-prices')) : '--',
             style_class: `stockbar-widget-price-label ${getFontSizeClass(16 * scale)}`
         });
         priceBox.add_child(this._priceLabel);
@@ -2001,7 +2060,7 @@ class DesktopStockWidget extends St.BoxLayout {
         this._symbolLabel.set_text(displaySymbol);
         this._nameLabel.set_text(displayName);
         this._applyWidgetLabelOrder(this._scale, isNameFirst);
-        this._priceLabel.set_text(`$${quote.price.toFixed(2)}`);
+        this._priceLabel.set_text(formatCurrency(quote.price, quote.currency, this._settings.get_boolean('format-large-prices')));
         
         this._changeLabel.set_text(`${quote.change >= 0 ? '+' : ''}${quote.change.toFixed(2)} (${quote.changePercent.toFixed(2)}%)`);
         this._changeLabel.style_class = `stockbar-widget-change-label ${getFontSizeClass(10 * this._scale)} ${getChangeClass(quote.change)}`;

@@ -41,6 +41,11 @@
             <summary>Refresh interval</summary>
             <description>Interval in seconds between stock price updates</description>
         </key>
+        <key name="format-large-prices" type="b">
+            <default>true</default>
+            <summary>Format large prices</summary>
+            <description>Show thousands separators in prices</description>
+        </key>
         <key name="font-size" type="i">
             <default>12</default>
             <summary>Font size</summary>

@@ -286,6 +286,20 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         });
         page.add(refreshGroup);
 
+        const formatPricesRow = new Adw.SwitchRow({
+            title: _('Format Large Prices'),
+            subtitle: _('Add thousands separators to prices'),
+        });
+
+        settings.bind(
+            'format-large-prices',
+            formatPricesRow,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
+        refreshGroup.add(formatPricesRow);
+
         // Custom stock names
         const customNamesGroup = new Adw.PreferencesGroup({
             title: _('Custom Stock Names'),
