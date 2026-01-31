@@ -443,7 +443,7 @@ class StockPopupMenu extends PanelMenu.Button {
                 this._searchResultsBox.add_child(noResultsLabel);
                 
                 // Also add option to add the typed text as a symbol directly
-                if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^]+$/.test(query)) {
+                if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
                     const directAddBtn = this._createDirectAddButton(query.toUpperCase());
                     this._searchResultsBox.add_child(directAddBtn);
                 }
@@ -465,7 +465,7 @@ class StockPopupMenu extends PanelMenu.Button {
             this._searchResultsBox.add_child(errorLabel);
             
             // Allow adding the typed text as a symbol directly
-            if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^]+$/.test(query)) {
+            if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
                 const directAddBtn = this._createDirectAddButton(query.toUpperCase());
                 this._searchResultsBox.add_child(directAddBtn);
             }

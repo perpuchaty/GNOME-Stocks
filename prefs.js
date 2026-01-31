@@ -541,7 +541,7 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
             if (!results || results.length === 0) {
                 addInfoRow(searchResultsGroup, searchResultRows, _('No results found'));
 
-                if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^]+$/.test(query)) {
+                if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
                     const directSymbol = query.toUpperCase();
                     const directRow = new Adw.ActionRow({
                         title: _('Add “%s”').format(directSymbol),
