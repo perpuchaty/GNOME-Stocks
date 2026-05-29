@@ -1,5 +1,6 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
+import Clutter from 'gi://Clutter';
 
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -255,7 +256,7 @@ export default class GNOMEStocksExtension extends Extension {
                 widget.ease({
                     opacity: 255,
                     duration: 200,
-                    mode: imports.gi.Clutter.AnimationMode.EASE_OUT_QUAD
+                    mode: Clutter.AnimationMode.EASE_OUT_QUAD
                 });
             } else {
                 // Move widget back to background layer
