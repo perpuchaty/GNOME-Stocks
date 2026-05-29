@@ -1,6 +1,6 @@
 # GNOME Stocks - GNOME Shell Extension
 
-A GNOME 49 extension for tracking stock market prices with search, watchlist, panel display, and desktop widgets.
+A GNOME extension for tracking stock market prices with search, watchlist, panel display, and desktop widgets.
 
 ![GNOME Stocks Demo](GNOME%20Stocks.gif)
 
@@ -125,7 +125,7 @@ gnome-stocks@perpuchaty.github.com/
 
 ## Requirements
 
-- GNOME Shell 49
+- GNOME Shell 50 or older
 - libsoup3 (for HTTP requests)
 
 ## Uninstallation
