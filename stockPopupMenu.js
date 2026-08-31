@@ -230,7 +230,6 @@ class StockPopupMenu extends PanelMenu.Button {
         this._settings = settings;
         this._extensionPath = extensionPath;
         
-        // Initialize shared data
         SharedData.init();
         this._api = SharedData.api;
         this._logoCache = SharedData.logoCache;
@@ -239,11 +238,9 @@ class StockPopupMenu extends PanelMenu.Button {
         this._refreshTimeout = null;
         this._searchTimeout = null;
         
-        // Initialize font sizes from settings
         this._fontSize = this._settings.get_int('font-size');
         this._smallFontSize = Math.max(8, this._fontSize - 2);
         
-        // Panel button with icon only (stocks shown separately)
         this._panelBox = new St.BoxLayout({
             style_class: 'panel-status-menu-box'
         });
@@ -256,10 +253,8 @@ class StockPopupMenu extends PanelMenu.Button {
         this._panelBox.add_child(this._panelIcon);
         this.add_child(this._panelBox);
         
-        // Build menu
         this._buildMenu();
         
-        // Connect settings changes
         this._settings.connectObject(
             'changed', (settings, key) => {
                 if (key === 'watchlist' || key === 'panel-stocks' || key === 'custom-stock-names' || key === 'watchlist-label-order' || key === 'watchlist-show-secondary-label') {
@@ -271,19 +266,16 @@ class StockPopupMenu extends PanelMenu.Button {
             this
         );
         
-        // Initial load
         this._loadWatchlist();
         this._startRefreshTimer();
     }
 
     _buildMenu() {
-        // Main container with fixed width
         this._mainContainer = new St.BoxLayout({
             vertical: true,
             style_class: 'stockbar-popup-menu'
         });
         
-        // Search section
         const searchContainer = new St.BoxLayout({
             style_class: 'stockbar-search-container'
         });
@@ -322,28 +314,24 @@ class StockPopupMenu extends PanelMenu.Button {
         searchContainer.add_child(this._searchEntry);
         this._mainContainer.add_child(searchContainer);
         
-        // Search results container
         this._searchResultsBox = new St.BoxLayout({
             vertical: true,
             style_class: 'stockbar-search-results'
         });
         this._mainContainer.add_child(this._searchResultsBox);
         
-        // Separator after search
         this._searchSeparator = new St.Widget({
             style_class: 'stockbar-separator',
             visible: false
         });
         this._mainContainer.add_child(this._searchSeparator);
         
-        // Watchlist header
         const watchlistHeader = new St.Label({
             text: 'WATCHLIST',
             style_class: 'stockbar-section-header'
         });
         this._mainContainer.add_child(watchlistHeader);
         
-        // Watchlist scroll view with fixed height
         this._watchlistScrollView = new St.ScrollView({
             style_class: 'stockbar-watchlist-scroll',
             hscrollbar_policy: St.PolicyType.NEVER,
@@ -359,19 +347,16 @@ class StockPopupMenu extends PanelMenu.Button {
         this._watchlistScrollView.add_child(this._watchlistBox);
         this._mainContainer.add_child(this._watchlistScrollView);
         
-        // Footer separator
         const footerSeparator = new St.Widget({
             style_class: 'stockbar-separator'
         });
         this._mainContainer.add_child(footerSeparator);
         
-        // Footer with buttons
         const footerBox = new St.BoxLayout({
             vertical: true,
             style_class: 'stockbar-menu-footer'
         });
         
-        // Refresh button
         const refreshButton = this._createFooterButton('view-refresh-symbolic', 'Refresh Now');
         refreshButton.connect('clicked', () => {
             this._refreshWatchlist();
@@ -379,7 +364,6 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         footerBox.add_child(refreshButton);
         
-        // Settings button
         const settingsButton = this._createFooterButton('preferences-system-symbolic', 'Settings');
         settingsButton.connect('clicked', () => {
             try {
@@ -391,7 +375,6 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         footerBox.add_child(settingsButton);
         
-        // Move Widgets button
         const moveWidgetsButton = this._createFooterButton('view-fullscreen-symbolic', 'Arrange Widgets');
         moveWidgetsButton.connect('clicked', () => {
             this._toggleWidgetMoveMode();
@@ -401,7 +384,6 @@ class StockPopupMenu extends PanelMenu.Button {
         
         this._mainContainer.add_child(footerBox);
         
-        // Add main container to menu
         const mainMenuItem = new PopupMenu.PopupBaseMenuItem({
             reactive: false,
             can_focus: false
@@ -410,7 +392,6 @@ class StockPopupMenu extends PanelMenu.Button {
         this.menu.addMenuItem(mainMenuItem);
         this._applyFontSize();
         
-        // Listen for font-size changes from preferences
         this._settings.connect('changed::font-size', () => {
             this._applyFontSize();
         });
@@ -448,11 +429,9 @@ class StockPopupMenu extends PanelMenu.Button {
         const fontSize = this._settings.get_int('font-size');
         const smallFontSize = Math.max(8, fontSize - 2);
         
-        // Store for use in item creation
         this._fontSize = fontSize;
         this._smallFontSize = smallFontSize;
         
-        // Refresh UI to apply changes
         this._updateWatchlistUI();
     }
 
@@ -475,7 +454,6 @@ class StockPopupMenu extends PanelMenu.Button {
             return;
         }
         
-        // Debounce search
         this._searchTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 300, () => {
             this._searchTimeout = null;
             this._performSearch(text);
@@ -487,7 +465,6 @@ class StockPopupMenu extends PanelMenu.Button {
         this._clearSearchResults();
         this._searchSeparator.visible = true;
         
-        // Add loading indicator
         const loadingLabel = new St.Label({
             text: 'Searching...',
             style_class: 'stockbar-loading-message'
@@ -505,7 +482,6 @@ class StockPopupMenu extends PanelMenu.Button {
                 });
                 this._searchResultsBox.add_child(noResultsLabel);
                 
-                // Also add option to add the typed text as a symbol directly
                 if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
                     const directAddBtn = this._createDirectAddButton(query.toUpperCase());
                     this._searchResultsBox.add_child(directAddBtn);
@@ -537,7 +513,6 @@ class StockPopupMenu extends PanelMenu.Button {
             });
             this._searchResultsBox.add_child(errorLabel);
             
-            // Allow adding the typed text as a symbol directly
             if (query.length >= 1 && query.length <= 10 && /^[A-Za-z0-9.^=]+$/.test(query)) {
                 const directAddBtn = this._createDirectAddButton(query.toUpperCase());
                 this._searchResultsBox.add_child(directAddBtn);

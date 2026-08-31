@@ -11,7 +11,6 @@ export class LogoCache {
         this._session.timeout = 10;
         this._pendingLoads = new Map();
         
-        // Ensure cache directory exists
         const dir = Gio.File.new_for_path(CACHE_DIR);
         if (!dir.query_exists(null)) {
             try {
@@ -27,7 +26,6 @@ export class LogoCache {
     }
 
     async loadLogo(symbol, logoInfo, callback) {
-        // Handle both old string format and new object format
         if (!logoInfo) {
             callback(null);
             return;
@@ -35,11 +33,9 @@ export class LogoCache {
         
         let domain, sources;
         if (typeof logoInfo === 'string') {
-            // Old format - just a URL
             domain = logoInfo;
             sources = [logoInfo];
         } else if (logoInfo.isDirect) {
-            // Direct URL to image - use as-is
             domain = logoInfo.domain;
             sources = logoInfo.sources;
         } else {
@@ -47,13 +43,11 @@ export class LogoCache {
             sources = logoInfo.sources || [];
         }
 
-        // Check memory cache
         if (this._cache.has(symbol)) {
             callback(this._cache.get(symbol));
             return;
         }
 
-        // Check if already loading
         if (this._pendingLoads.has(symbol)) {
             this._pendingLoads.get(symbol).push(callback);
             return;
@@ -61,7 +55,6 @@ export class LogoCache {
 
         this._pendingLoads.set(symbol, [callback]);
 
-        // Check disk cache
         const cachePath = this.getCachePath(symbol);
         const cacheFile = Gio.File.new_for_path(cachePath);
         
@@ -72,14 +65,12 @@ export class LogoCache {
                 this._notifyCallbacks(symbol, gicon);
                 return;
             } catch (e) {
-                // Cache file corrupted, will re-download
+                // A bad cache entry is harmless; the download below replaces it.
             }
         }
 
-        // Build list of URLs to try
         let urlsToTry;
         if (logoInfo.isDirect) {
-            // Direct URLs are used as-is
             urlsToTry = sources;
         } else {
             urlsToTry = sources.map(source => {
@@ -90,13 +81,11 @@ export class LogoCache {
             });
         }
 
-        // Try each URL source until one works
         this._tryLoadFromUrls(symbol, urlsToTry, 0, cacheFile);
     }
     
     _tryLoadFromUrls(symbol, urls, index, cacheFile) {
         if (index >= urls.length) {
-            // All sources failed
             this._notifyCallbacks(symbol, null);
             return;
         }
@@ -115,8 +104,7 @@ export class LogoCache {
                     if (bytes && bytes.get_size() > 100) {
                         const data = bytes.get_data();
                         
-                        // Check if it's a valid image (not an error page)
-                        // Google favicon returns a default globe icon that's small
+                        // Tiny responses are usually an error page or a generic favicon.
                         if (data && data.length > 500) {
                             try {
                                 const outputStream = cacheFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
@@ -134,10 +122,8 @@ export class LogoCache {
                     }
                 }
                 
-                // Try next source
                 this._tryLoadFromUrls(symbol, urls, index + 1, cacheFile);
             } catch (e) {
-                // Try next source on error
                 this._tryLoadFromUrls(symbol, urls, index + 1, cacheFile);
             }
         });
@@ -158,7 +144,6 @@ export class LogoCache {
     clearCache() {
         this._cache.clear();
         
-        // Clear disk cache
         const dir = Gio.File.new_for_path(CACHE_DIR);
         if (dir.query_exists(null)) {
             const enumerator = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);

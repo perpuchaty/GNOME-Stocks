@@ -4,11 +4,10 @@ import Soup from 'gi://Soup?version=3.0';
 
 const API_BASE_URL = 'https://query1.finance.yahoo.com/v8/finance/chart/';
 const SEARCH_URL = 'https://query1.finance.yahoo.com/v1/finance/search';
-// Multiple logo sources for better coverage
 const LOGO_SOURCES = [
     'https://www.google.com/s2/favicons?sz=128&domain=',
     'https://logo.clearbit.com/',
-    'https://icons.duckduckgo.com/ip3/',  // DuckDuckGo icons (append .ico)
+    'https://icons.duckduckgo.com/ip3/',
 ];
 
 export class StockAPI {
@@ -32,7 +31,6 @@ export class StockAPI {
             const url = `${SEARCH_URL}?q=${encodeURIComponent(query)}&quotesCount=10&newsCount=0`;
             const message = Soup.Message.new('GET', url);
             
-            // Add headers to mimic browser request
             message.request_headers.append('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36');
             message.request_headers.append('Accept', 'application/json');
             
@@ -47,7 +45,6 @@ export class StockAPI {
                     const decoder = new TextDecoder('utf-8');
                     const text = decoder.decode(bytes.get_data());
                     
-                    // Check if response looks like JSON
                     if (!text || !text.trim().startsWith('{')) {
                         console.debug('GNOME Stocks: Non-JSON response from search API');
                         resolve([]);
@@ -59,11 +56,9 @@ export class StockAPI {
                     if (data.quotes) {
                         const stocks = data.quotes
                             .filter(q => {
-                                // Include stocks, ETFs, and indices
                                 if (q.quoteType === 'EQUITY' || q.quoteType === 'ETF' || q.quoteType === 'INDEX') {
                                     return true;
                                 }
-                                // For crypto, only include USD pairs
                                 if (q.quoteType === 'CRYPTOCURRENCY') {
                                     return q.symbol.endsWith('-USD');
                                 }
@@ -71,19 +66,17 @@ export class StockAPI {
                             })
                             .map(q => {
                                 const isCrypto = q.quoteType === 'CRYPTOCURRENCY';
-                                // For crypto, show clean name without -USD
                                 let displaySymbol = q.symbol;
                                 let displayName = q.shortname || q.longname || q.symbol;
                                 
                                 if (isCrypto && q.symbol.endsWith('-USD')) {
                                     displaySymbol = q.symbol.replace('-USD', '');
-                                    // Clean up the name too
                                     displayName = displayName.replace(' USD', '').replace(' / USD', '').replace('/USD', '');
                                 }
                                 
                                 return {
-                                    symbol: q.symbol,  // Keep original for API calls
-                                    displaySymbol: displaySymbol,  // Clean display name
+                                    symbol: q.symbol,
+                                    displaySymbol: displaySymbol,
                                     name: displayName,
                                     exchange: q.exchange,
                                     type: q.quoteType,
@@ -121,7 +114,7 @@ export class StockAPI {
                     }
                 } catch (e) {
                     console.debug(`GNOME Stocks: Search error: ${e.message}`);
-                    resolve([]); // Return empty instead of rejecting
+                    resolve([]);
                 }
             });
         });
@@ -132,7 +125,6 @@ export class StockAPI {
             const url = `${API_BASE_URL}${encodeURIComponent(symbol)}?interval=1d&range=1d`;
             const message = Soup.Message.new('GET', url);
             
-            // Add headers to mimic browser request
             message.request_headers.append('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36');
             message.request_headers.append('Accept', 'application/json');
             
@@ -147,7 +139,6 @@ export class StockAPI {
                     const decoder = new TextDecoder('utf-8');
                     const text = decoder.decode(bytes.get_data());
                     
-                    // Check if response looks like JSON
                     if (!text || !text.trim().startsWith('{')) {
                         reject(new Error('Invalid response format'));
                         return;
@@ -165,12 +156,10 @@ export class StockAPI {
                         const change = currentPrice - previousClose;
                         const changePercent = (change / previousClose) * 100;
                         
-                        // Detect if this is a cryptocurrency
                         const isCrypto = meta.instrumentType === 'CRYPTOCURRENCY' || 
                                         symbol.endsWith('-USD') || 
                                         meta.exchangeName === 'CCC';
                         
-                        // Clean display symbol for crypto (remove -USD suffix)
                         let displaySymbol = meta.symbol;
                         let displayName = meta.shortName || meta.longName || meta.symbol;
                         if (isCrypto && meta.symbol.endsWith('-USD')) {
@@ -213,7 +202,6 @@ export class StockAPI {
     }
 
     getLogoUrl(symbol, companyName) {
-        // Direct crypto icon URLs using CryptoLogos/CoinGecko CDN
         const cryptoIconUrls = {
             'BTC-USD': 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
             'BTC': 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
@@ -279,7 +267,6 @@ export class StockAPI {
             'SUI': 'https://assets.coingecko.com/coins/images/26375/large/sui_asset.jpeg',
         };
         
-        // Check for direct crypto URL first
         if (cryptoIconUrls[symbol]) {
             return {
                 domain: symbol,
@@ -288,8 +275,6 @@ export class StockAPI {
             };
         }
         
-        // Try to derive domain from company name
-        // Common mappings for popular stocks
         const domainMappings = {
             'AAPL': 'apple.com',
             'GOOGL': 'google.com',
@@ -452,7 +437,6 @@ export class StockAPI {
             'TTE': 'totalenergies.com',
             'RIVN': 'rivian.com',
             'LCID': 'lucidmotors.com',
-            // Bitcoin/Crypto ETFs
             'IBIT': 'blackrock.com',
             'GBTC': 'grayscale.com',
             'BITO': 'proshares.com',
@@ -465,7 +449,6 @@ export class StockAPI {
             'EZBC': 'franklintempleton.com',
             'BTCO': 'invesco.com',
             'DEFI': 'hashdex.com',
-            // More healthcare
             'CVS': 'cvs.com',
             'CI': 'cigna.com',
             'HUM': 'humana.com',
@@ -476,7 +459,6 @@ export class StockAPI {
             'MOH': 'molinahealthcare.com'
         };
         
-        // Check if it's a known crypto - return direct icon URL
         if (cryptoIconUrls[symbol]) {
             return { isDirect: true, domain: symbol, sources: [cryptoIconUrls[symbol]] };
         }
@@ -485,7 +467,7 @@ export class StockAPI {
             return { domain: domainMappings[symbol], sources: LOGO_SOURCES };
         }
         
-        // Try to guess domain from company name
+        // This guess is only a fallback for symbols missing from the table above.
         if (companyName) {
             const cleanName = companyName
                 .toLowerCase()

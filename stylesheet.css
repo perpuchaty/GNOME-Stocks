@@ -1,11 +1,4 @@
-/* GNOME Stocks Extension Stylesheet */
-
-/* ============================================
-   MAIN POPUP MENU CONTAINER
-   ============================================ */
-
-/* Main popup menu - fixed width */
-/* Note: Only target our specific popup, not all popup-menu-content */
+/* Popup */
 .stockbar-popup-menu .popup-menu-content {
     padding: 0;
 }
@@ -18,9 +11,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* ============================================
-   SEARCH BOX
-   ============================================ */
+/* Search */
 
 .stockbar-search-container {
     padding: 0 0 12px 0;
@@ -36,13 +27,11 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Stock logo */
 .stockbar-stock-logo {
     margin-right: 10px;
     border-radius: 6px;
 }
 
-/* Stock info text */
 .stockbar-stock-symbol {
     font-weight: bold;
     font-size: 13px;
@@ -55,7 +44,6 @@
     max-width: 160px;
 }
 
-/* Stock prices */
 .stockbar-stock-price {
     font-weight: bold;
     font-size: 13px;
@@ -80,9 +68,7 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* ============================================
-   ACTION BUTTONS (Chart, Panel, Delete)
-   ============================================ */
+/* Actions */
 
 .stockbar-action-button {
     padding: 6px;
@@ -108,9 +94,7 @@
     background-color: rgba(100, 150, 255, 0.3);
 }
 
-/* ============================================
-   MENU FOOTER (Refresh, Settings)
-   ============================================ */
+/* Footer */
 
 .stockbar-menu-footer {
     padding-top: 8px;
@@ -143,19 +127,11 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* ============================================
-   SEPARATOR
-   ============================================ */
-
 .stockbar-separator {
     height: 1px;
     margin: 8px 12px;
     background-color: rgba(255, 255, 255, 0.1);
 }
-
-/* ============================================
-   EMPTY STATE
-   ============================================ */
 
 .stockbar-empty-state {
     padding: 24px;
@@ -168,9 +144,7 @@
     text-align: center;
 }
 
-/* ============================================
-   SEARCH RESULTS
-   ============================================ */
+/* Results */
 
 .stockbar-search-results {
     padding: 4px 0;
@@ -188,9 +162,7 @@
     background-color: rgba(255, 255, 255, 0.08);
 }
 
-/* ============================================
-   PANEL STOCK BUTTONS (Top Bar)
-   ============================================ */
+/* Panel */
 
 .stockbar-panel-button {
     padding: 0 10px;
@@ -223,9 +195,7 @@
     font-size: 10px;
 }
 
-/* ============================================
-   CHART POPUP
-   ============================================ */
+/* Chart popup */
 
 .stockbar-chart-popup {
     width: 340px;
