@@ -286,6 +286,7 @@ export class StockAPI {
             'NVDA': 'nvidia.com',
             'AMD': 'amd.com',
             'INTC': 'intel.com',
+            'NXPI': 'nxp.com',
             'NFLX': 'netflix.com',
             'DIS': 'disney.com',
             'PYPL': 'paypal.com',

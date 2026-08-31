@@ -99,25 +99,21 @@ export class LogoCache {
             try {
                 const statusCode = message.get_status();
                 const bytes = session.send_and_read_finish(result);
+                const contentType = message.response_headers.get_one('Content-Type') || '';
                 
                 if (statusCode === Soup.Status.OK || statusCode === 200) {
-                    if (bytes && bytes.get_size() > 100) {
-                        const data = bytes.get_data();
-                        
-                        // Tiny responses are usually an error page or a generic favicon.
-                        if (data && data.length > 500) {
-                            try {
-                                const outputStream = cacheFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
-                                outputStream.write_bytes(bytes, null);
-                                outputStream.close(null);
-                                
-                                const gicon = Gio.FileIcon.new(cacheFile);
-                                this._cache.set(symbol, gicon);
-                                this._notifyCallbacks(symbol, gicon);
-                                return;
-                            } catch (writeError) {
-                                console.debug(`GNOME Stocks: Error writing cache: ${writeError.message}`);
-                            }
+                    if (bytes && bytes.get_size() > 100 && contentType.toLowerCase().startsWith('image/')) {
+                        try {
+                            const outputStream = cacheFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
+                            outputStream.write_bytes(bytes, null);
+                            outputStream.close(null);
+
+                            const gicon = Gio.FileIcon.new(cacheFile);
+                            this._cache.set(symbol, gicon);
+                            this._notifyCallbacks(symbol, gicon);
+                            return;
+                        } catch (writeError) {
+                            console.debug(`GNOME Stocks: Error writing cache: ${writeError.message}`);
                         }
                     }
                 }
