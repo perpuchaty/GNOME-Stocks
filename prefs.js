@@ -12,21 +12,18 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         const settings = this.getSettings();
         const api = new StockAPI();
 
-        // Create a preferences page
         const page = new Adw.PreferencesPage({
             title: _('General'),
             icon_name: 'preferences-system-symbolic',
         });
         window.add(page);
 
-        // Appearance group
         const appearanceGroup = new Adw.PreferencesGroup({
             title: _('Appearance'),
             description: _('Customize the look of GNOME Stocks'),
         });
         page.add(appearanceGroup);
 
-        // Panel position
         const positionRow = new Adw.ComboRow({
             title: _('Panel Position'),
             subtitle: _('Where to place the indicator in the panel'),
@@ -38,7 +35,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         positionModel.append(_('Right'));
         positionRow.model = positionModel;
 
-        // Map setting value to combo index
         const positionMap = { 'left': 0, 'center': 1, 'right': 2 };
         const reversePositionMap = ['left', 'center', 'right'];
         positionRow.selected = positionMap[settings.get_string('panel-position')] ?? 2;
@@ -49,7 +45,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(positionRow);
 
-        // Font size
         const fontSizeRow = new Adw.SpinRow({
             title: _('Font Size'),
             subtitle: _('Font size for the popup menu (8-24)'),
@@ -71,7 +66,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(fontSizeRow);
 
-        // Watchlist label order
         const labelOrderRow = new Adw.ComboRow({
             title: _('Watchlist Label Order'),
             subtitle: _('Choose which label is larger in the watchlist'),
@@ -92,7 +86,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(labelOrderRow);
 
-        // Show secondary watchlist label
         const showSecondaryLabelRow = new Adw.SwitchRow({
             title: _('Show Secondary Label'),
             subtitle: _('Show or hide the smaller line in watchlist items'),
@@ -107,7 +100,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(showSecondaryLabelRow);
 
-        // Chart style
         const chartStyleRow = new Adw.ComboRow({
             title: _('Chart Style'),
             subtitle: _('Choose how charts are displayed'),
@@ -119,7 +111,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         chartStyleModel.append(_('Candle Chart'));
         chartStyleRow.model = chartStyleModel;
 
-        // Map setting value to combo index
         const chartStyleMap = { 'line': 0, 'bar': 1, 'candle': 2 };
         const reverseChartStyleMap = ['line', 'bar', 'candle'];
         chartStyleRow.selected = chartStyleMap[settings.get_string('chart-style')] ?? 0;
@@ -130,7 +121,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(chartStyleRow);
 
-        // Show main icon
         const showIconRow = new Adw.SwitchRow({
             title: _('Show Extension Icon'),
             subtitle: _('Show or hide the main menu icon in the top bar'),
@@ -145,14 +135,12 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         appearanceGroup.add(showIconRow);
 
-        // Panel Display group
         const panelDisplayGroup = new Adw.PreferencesGroup({
             title: _('Panel Display'),
             description: _('Customize what appears on panel stock buttons'),
         });
         page.add(panelDisplayGroup);
 
-        // Show stock icon
         const showStockIconRow = new Adw.SwitchRow({
             title: _('Show Stock Icon'),
             subtitle: _('Display company logo/icon on panel buttons'),
@@ -167,7 +155,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         panelDisplayGroup.add(showStockIconRow);
 
-        // Show stock name
         const showStockNameRow = new Adw.SwitchRow({
             title: _('Show Stock Name'),
             subtitle: _('Display stock symbol/ticker on panel buttons'),
@@ -182,7 +169,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         panelDisplayGroup.add(showStockNameRow);
 
-        // Show stock price
         const showStockPriceRow = new Adw.SwitchRow({
             title: _('Show Stock Price'),
             subtitle: _('Display current price on panel buttons'),
@@ -197,7 +183,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         panelDisplayGroup.add(showStockPriceRow);
 
-        // Show stock gain
         const showStockGainRow = new Adw.SwitchRow({
             title: _('Show Stock Gain'),
             subtitle: _('Display price change/percentage on panel buttons'),
@@ -212,14 +197,12 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         panelDisplayGroup.add(showStockGainRow);
 
-        // Desktop Widget settings group
         const desktopWidgetGroup = new Adw.PreferencesGroup({
             title: _('Desktop Widgets'),
             description: _('Configure desktop stock widgets (pin stocks from the menu)'),
         });
         page.add(desktopWidgetGroup);
 
-        // Widget opacity
         const widgetOpacityRow = new Adw.SpinRow({
             title: _('Widget Opacity'),
             subtitle: _('Background opacity of desktop widgets (0-100%)'),
@@ -241,7 +224,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         desktopWidgetGroup.add(widgetOpacityRow);
 
-        // Widget scale
         const widgetScaleRow = new Adw.SpinRow({
             title: _('Widget Scale'),
             subtitle: _('Size multiplier for desktop widgets (0.5-2.0)'),
@@ -264,7 +246,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         desktopWidgetGroup.add(widgetScaleRow);
 
-        // Show chart in widget
         const widgetShowChartRow = new Adw.SwitchRow({
             title: _('Show Chart'),
             subtitle: _('Display price chart in desktop widgets'),
@@ -279,7 +260,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         desktopWidgetGroup.add(widgetShowChartRow);
 
-        // Refresh settings group
         const refreshGroup = new Adw.PreferencesGroup({
             title: _('Data'),
             description: _('Stock data settings'),
@@ -300,7 +280,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         refreshGroup.add(formatPricesRow);
 
-        // Custom stock names
         const customNamesGroup = new Adw.PreferencesGroup({
             title: _('Custom Stock Names'),
             description: _('Override company names shown in the watchlist'),
@@ -420,7 +399,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         rebuildCustomNames();
         settings.connect('changed::watchlist', rebuildCustomNames);
 
-        // Refresh interval
         const refreshRow = new Adw.SpinRow({
             title: _('Refresh Interval'),
             subtitle: _('How often to update stock prices (in seconds)'),
@@ -442,14 +420,12 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
 
         refreshGroup.add(refreshRow);
 
-        // Watchlist group
         const watchlistGroup = new Adw.PreferencesGroup({
             title: _('Watchlist'),
             description: _('Search and manage your watched stocks'),
         });
         page.add(watchlistGroup);
 
-        // Search row
         const searchRow = new Adw.EntryRow({
             title: _('Search for stocks...'),
         });
@@ -474,7 +450,6 @@ export default class GNOMEStocksPreferences extends ExtensionPreferences {
         searchRow.activatable_widget = searchButton;
         watchlistGroup.add(searchRow);
 
-        // Search results group
         const searchResultsGroup = new Adw.PreferencesGroup({
             title: _('Search Results'),
         });

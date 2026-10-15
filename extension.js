@@ -19,25 +19,13 @@ export default class GNOMEStocksExtension extends Extension {
     enable() {
         console.debug('GNOME Stocks: Enabling extension');
         
-        // Get settings
         this._settings = this.getSettings();
-        
-        // Create the main indicator (menu button)
         this._indicator = new StockPopupMenu(this._settings, this.path);
-        
-        // Add to panel
         this._addToPanel();
-        
-        // Then sync visibility based on settings
         this._syncIndicatorVisibility();
-        
-        // Create individual stock buttons
         this._createStockButtons();
-        
-        // Create desktop widgets
         this._createDesktopWidgets();
-        
-        // Listen for settings changes
+
         this._settings.connectObject(
             'changed::panel-position', () => this._repositionIndicator(),
             'changed::panel-stocks', () => this._updateStockButtons(),
@@ -101,7 +89,6 @@ export default class GNOMEStocksExtension extends Extension {
         const panelStocks = this._settings.get_strv('panel-stocks');
         const position = this._settings.get_string('panel-position');
         
-        // Remove buttons for stocks no longer in panel
         for (const [symbol, button] of this._stockButtons) {
             if (!panelStocks.includes(symbol)) {
                 button.destroy();
@@ -109,7 +96,6 @@ export default class GNOMEStocksExtension extends Extension {
             }
         }
         
-        // Add buttons for new stocks
         for (const symbol of panelStocks) {
             if (!this._stockButtons.has(symbol)) {
                 const button = new StockPanelButton(symbol, this._settings, this._indicator);
@@ -142,7 +128,6 @@ export default class GNOMEStocksExtension extends Extension {
             box.insert_child_at_index(this._indicator.container, 0);
         }
         
-        // Reposition stock buttons
         for (const [symbol, button] of this._stockButtons) {
             button.container.get_parent()?.remove_child(button.container);
             
@@ -176,34 +161,26 @@ export default class GNOMEStocksExtension extends Extension {
     
     _createDesktopWidget(symbol) {
         try {
-            // Access the API and logoCache from the main indicator
             const api = this._indicator?._api;
             const logoCache = this._indicator?._logoCache;
             
             const widget = new DesktopStockWidget(symbol, this._settings, api, logoCache);
-            
-            // Check if we're in move mode
             const moveMode = this._settings.get_boolean('widget-move-mode');
             
             if (moveMode) {
-                // Add to uiGroup on top for editing
                 Main.layoutManager.uiGroup.add_child(widget);
                 widget.add_style_class_name('stockbar-widget-move-mode');
             } else {
-                // Add to background group so it appears on desktop behind windows
-                // The background group contains the desktop wallpaper
+                // Keep widgets with the wallpaper so normal windows cover them.
                 const bgManager = Main.layoutManager._bgManagers?.[0];
                 if (bgManager && bgManager.backgroundActor) {
-                    // Add after the background actor in the same parent
                     const bgParent = bgManager.backgroundActor.get_parent();
                     if (bgParent) {
                         bgParent.add_child(widget);
                     } else {
-                        // Fallback: add to uiGroup at index 1 (just above background)
                         Main.layoutManager.uiGroup.insert_child_at_index(widget, 1);
                     }
                 } else {
-                    // Fallback: add to uiGroup at low index
                     Main.layoutManager.uiGroup.insert_child_at_index(widget, 1);
                 }
             }
@@ -218,7 +195,6 @@ export default class GNOMEStocksExtension extends Extension {
     _updateDesktopWidgets() {
         const desktopWidgets = this._settings.get_strv('desktop-widgets');
         
-        // Remove widgets for stocks no longer pinned
         for (const [symbol, widget] of this._desktopWidgets) {
             if (!desktopWidgets.includes(symbol)) {
                 const parent = widget.get_parent();
@@ -231,7 +207,6 @@ export default class GNOMEStocksExtension extends Extension {
             }
         }
         
-        // Add widgets for newly pinned stocks
         for (const symbol of desktopWidgets) {
             if (!this._desktopWidgets.has(symbol)) {
                 this._createDesktopWidget(symbol);
@@ -246,7 +221,6 @@ export default class GNOMEStocksExtension extends Extension {
             const currentParent = widget.get_parent();
             
             if (moveMode) {
-                // Move widget to uiGroup on top for editing
                 if (currentParent) {
                     currentParent.remove_child(widget);
                 }
@@ -259,14 +233,11 @@ export default class GNOMEStocksExtension extends Extension {
                     mode: Clutter.AnimationMode.EASE_OUT_QUAD
                 });
             } else {
-                // Move widget back to background layer
                 if (currentParent) {
                     currentParent.remove_child(widget);
                 }
-                // Remove the border indicator
                 widget.remove_style_class_name('stockbar-widget-move-mode');
-                
-                // Add to background group
+
                 const bgManager = Main.layoutManager._bgManagers?.[0];
                 if (bgManager && bgManager.backgroundActor) {
                     const bgParent = bgManager.backgroundActor.get_parent();
@@ -285,12 +256,10 @@ export default class GNOMEStocksExtension extends Extension {
     disable() {
         console.debug('GNOME Stocks: Disabling extension');
         
-        // Disconnect all settings signals
         if (this._settings) {
             this._settings.disconnectObject(this);
         }
         
-        // Destroy all desktop widgets
         for (const [symbol, widget] of this._desktopWidgets) {
             const parent = widget.get_parent();
             if (parent) {
@@ -300,7 +269,6 @@ export default class GNOMEStocksExtension extends Extension {
         }
         this._desktopWidgets.clear();
         
-        // Destroy all stock buttons
         for (const [symbol, button] of this._stockButtons) {
             button.destroy();
         }
