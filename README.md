@@ -125,7 +125,7 @@ gnome-stocks@perpuchaty.github.com/
 
 ## Requirements
 
-- GNOME Shell 50 or older
+- GNOME Shell 45-52
 - libsoup3 (for HTTP requests)
 
 ## Uninstallation
