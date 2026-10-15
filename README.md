@@ -74,6 +74,7 @@ schemas/            GSettings schema
 ## Requirements
 
 - GNOME Shell 45-52
+- Tested on GNOME 52 only so far
 - libsoup3 (for HTTP requests)
 
 ## Uninstallation

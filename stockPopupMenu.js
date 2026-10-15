@@ -272,7 +272,7 @@ class StockPopupMenu extends PanelMenu.Button {
 
     _buildMenu() {
         this._mainContainer = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-popup-menu'
         });
         
@@ -315,7 +315,7 @@ class StockPopupMenu extends PanelMenu.Button {
         this._mainContainer.add_child(searchContainer);
         
         this._searchResultsBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-search-results'
         });
         this._mainContainer.add_child(this._searchResultsBox);
@@ -340,7 +340,7 @@ class StockPopupMenu extends PanelMenu.Button {
         });
         
         this._watchlistBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-watchlist-container'
         });
         
@@ -353,7 +353,7 @@ class StockPopupMenu extends PanelMenu.Button {
         this._mainContainer.add_child(footerSeparator);
         
         const footerBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-menu-footer'
         });
         
@@ -587,7 +587,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         // Stock info
         const infoBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true
         });
         this._infoBox = infoBox;
@@ -774,7 +774,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         // Info box
         const infoBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true
         });
         
@@ -824,7 +824,7 @@ class StockPopupMenu extends PanelMenu.Button {
         
         // Price box
         const priceBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-stock-price-box'
         });
         
@@ -1172,7 +1172,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._headerSection = new PopupMenu.PopupMenuSection();
         
         const headerBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-chart-header-box'
         });
         
@@ -1188,7 +1188,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._menuHeader.add_child(this._menuLogo);
         
         const infoBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true
         });
         
@@ -1207,7 +1207,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._menuHeader.add_child(infoBox);
         
         const priceBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-stock-price-box'
         });
         
@@ -1241,7 +1241,7 @@ class StockPanelButton extends PanelMenu.Button {
         this._chartSection = new PopupMenu.PopupMenuSection();
         
         const chartBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-chart-box'
         });
         
@@ -1279,7 +1279,7 @@ class StockPanelButton extends PanelMenu.Button {
         
         // Chart display area - using DrawingArea for nice graphics
         this._chartContainer = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             style_class: 'stockbar-chart-container'
         });
         
@@ -1691,7 +1691,7 @@ class DesktopStockWidget extends St.BoxLayout {
         const scaleClass = getWidgetScaleClass(scale);
         
         super._init({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             reactive: true,
             track_hover: true,
             style_class: `stockbar-desktop-widget ${opacityClass} ${scaleClass}`
@@ -1783,7 +1783,7 @@ class DesktopStockWidget extends St.BoxLayout {
         
         // Info
         const infoBox = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true
         });
         this._infoBox = infoBox;
@@ -1815,7 +1815,7 @@ class DesktopStockWidget extends St.BoxLayout {
         
         // Price
         const priceBox = new St.BoxLayout({
-            vertical: true
+            orientation: Clutter.Orientation.VERTICAL
         });
         
         this._priceLabel = new St.Label({
@@ -1885,7 +1885,7 @@ class DesktopStockWidget extends St.BoxLayout {
         const showChart = this._settings.get_boolean('desktop-widget-show-chart');
         
         this._chartContainer = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             visible: showChart,
             style_class: 'stockbar-widget-chart-container'
         });
